@@ -9,6 +9,8 @@ Created on Tue Oct 19 14:33:23 2021
 import ROOT
 import sys
 
+
+
 class cutFlow:
     """help"""
     def __init__(self,
@@ -38,6 +40,7 @@ class cutFlow:
         
         self.counts = []
         
+        self.table =[]
     
 
 
@@ -55,7 +58,7 @@ class cutFlow:
     
      
     def SetDataFrame (self):
-        """ Associate every tree to the cladd RDataFrame  """ 
+        """ Associate every tree to the class RDataFrame  """ 
         for i in range(len(self.nameTree)):
             self.dataframe.append(ROOT.RDataFrame(self.tree[i]))
         
@@ -64,16 +67,74 @@ class cutFlow:
     def SetCuts(self):
         """Filter all the data according to specific constraints"""
         self.SetDataFrame()
+        
         for i in range(len(self.nameTree)):
             self.counts.append([])
+            
+            self.counts[i].append("")
+            self.counts[i][0] = int(self.dataframe[i].Count())
             
             for j in range(len(self.cuts)):
                 self.counts[i].append("")
                 self.dataframe[i] = self.dataframe[i].Filter(str(self.cuts[j][1]))
-                self.counts[i][j] = int(self.dataframe[i].Count())
+                self.counts[i][j+1] = int(self.dataframe[i].Count())
             
+    
+ 
+   
+    def printTable (self, borderHorizontal = '-', borderVertical = '|', borderCross = '+'):
+        cols = [list(x) for x in zip(*self.table)]
+        lengths = [max(map(len, map(str, col))) for col in cols]
+        f = borderVertical + borderVertical.join(' {:>%d} ' % l for l in lengths) + borderVertical
         
+        s=borderCross
+        for col in range(len(cols)):
+            s = s + (borderHorizontal * (int(lengths[col])+2)) + borderCross
+        
+        #s = borderCross + borderCross.join(borderHorizontal * (l+2) for l in lengths) + borderCross
+        
+
+        print(s)
+        for row in self.table:
+            print(f.format(*row))
+            if (row == ["CUT", "FILTERED DATA"]):
+                print(s)      
+        print(s)        
+    
+    
+    
+    #@staticmethod
+    def GetCounts(self):
+        """cout the results for all the counts according to the filters applied"""
+        print("From Tree: "+ self.inFileName);
+        
+        for i in range(len(self.nameTree)):
+            print("\n\nTreeBranch: " + self.nameTree[i]);
             
+            print("STARTING DATA: "+ str(self.counts[i][0])+"\n")
+            
+            self.table.append(["CUT", "FILTERED DATA"])
+            for j in range(len(self.cuts)):
+                self.table.append([str(self.cuts[j][0]), str(self.counts[i][j+1])])
+                #print("Cut: "+ self.cuts[j][0]+"\t\t\t\t\t\t"+str(self.counts[i][j+1]))
+            self.printTable()    
+        
+        print("\n\n\n")
+        
+
+
+
+
+
+
+
+
+#   x = [['Length', 'Time(ms)'], [0, 0], [250, 6], [500, 21], [750, 50], [1000, 87], [1250, 135], [1500, 196], [1750, 269], [2000, 351]]
+#   printTable(x)
+
+
+
+
 
 
 inFileName = "bkg2_Demo.root"
@@ -101,12 +162,12 @@ print(bkg.counts)
 
 bkg.SetCuts()
 print(bkg.counts)
+bkg.GetCounts()
 
 
 
 
-
-
+print ("g" + ("f" * 4))
 
 
 """
