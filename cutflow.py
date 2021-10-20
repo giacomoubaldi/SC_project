@@ -18,30 +18,37 @@ class cutFlow:
                                   
                  nameTree= None,
                  
-                 cuts = None
+                 cuts = None,
                  
-                 
+                 outFileName = None
                  
                  ):
         
         self.inFileName= inFileName
-        
-        
-        
+                        
         self.nameTree = nameTree
         
         self.cuts = cuts
         
-        self.tree = []
-         
-        self.inFile= ""
+        self.outFileName = outFileName
         
+        self.inFile = ""
+        
+        self.outFile = ""
+            
+        self.tree = []
+                         
         self.dataframe = []
         
         self.counts = []
         
-        self.table =[]
-    
+        self.totalcounts = []
+        
+        self.table = []
+        
+        self.SNR = []
+        
+        sys.stdout = open(self.outFileName,'a')
 
 
     
@@ -79,8 +86,22 @@ class cutFlow:
                 self.dataframe[i] = self.dataframe[i].Filter(str(self.cuts[j][1]))
                 self.counts[i][j+1] = int(self.dataframe[i].Count())
             
+            
+          
+            
+    def SetTotalCounts(self):
+        """  Sum all the data of all the branches for a given cut """ 
+        self.totalcounts =[]
+        for j in range(len(self.cuts)):
+            self.totalcounts.append(0)
+            
+                
+            for i in range(len(self.nameTree)):
+                self.totalcounts[j]= int(self.totalcounts[j])+ int(self.counts[i][j+1])
+                
+            #print (self.totalcounts[j])
+        
     
- 
    
     def printTable (self, borderHorizontal = '-', borderVertical = '|', borderCross = '+'):
         cols = [list(x) for x in zip(*self.table)]
@@ -97,21 +118,28 @@ class cutFlow:
         print(s)
         for row in self.table:
             print(f.format(*row))
-            if (row == ["CUT", "FILTERED DATA"]):
+            if (row == ["CUT", "FILTERED DATA"] or row == ["CUT", "S/B RATIO"]):
                 print(s)      
         print(s)        
-    
+        print("\n\n")
     
     
     #@staticmethod
     def GetCounts(self):
         """cout the results for all the counts according to the filters applied"""
+        
+        
+        
+        
         print("From Tree: "+ self.inFileName);
+        print("--------------------------------------")
         
         for i in range(len(self.nameTree)):
-            print("\n\nTreeBranch: " + self.nameTree[i]);
+            print("\nTreeBranch: " + self.nameTree[i]);
             
             print("STARTING DATA: "+ str(self.counts[i][0])+"\n")
+            
+            self.table = []
             
             self.table.append(["CUT", "FILTERED DATA"])
             for j in range(len(self.cuts)):
@@ -121,18 +149,49 @@ class cutFlow:
         
         print("\n\n\n")
         
+        
 
 
-
-
-
-
-
-
+    def SetSNR(self, bkg ):
+        """do all the S / B ratio for every signal and for every cut. Specifically it is the ratio of a branch of the signal over all the branches of the background"""
+        bkg.SetTotalCounts()
+        
+        for i in range(len(self.nameTree)):
+            self.SNR.append([])
+            
+                  
+            for j in range(len(self.cuts)):
+                self.SNR[i].append("")
+                self.SNR[i][j] = (float(self.counts[i][j+1]) / float(bkg.totalcounts[j]))
+            
+                #print(self.SNR[i][j])
+            
 #   x = [['Length', 'Time(ms)'], [0, 0], [250, 6], [500, 21], [750, 50], [1000, 87], [1250, 135], [1500, 196], [1750, 269], [2000, 351]]
 #   printTable(x)
 
-
+    def GetSNR(self, bkg):
+        """cout all the S/N according to the filters applied"""
+        
+        
+        
+        
+        print("Signal / Backroung ratio from");
+        print("S: "+ self.inFileName )
+        print("B: "+ bkg.inFileName)
+        print("--------------------------------------")
+        
+        for i in range(len(self.nameTree)):
+            print("\nTreeBranch: " + self.nameTree[i]);
+                                    
+            self.table = []
+            
+            self.table.append(["CUT", "S/B RATIO"])
+            for j in range(len(self.cuts)):
+                self.table.append([str(self.cuts[j][0]), str(self.SNR[i][j])])
+                #print("Cut: "+ self.cuts[j][0]+"\t\t\t\t\t\t"+str(self.counts[i][j+1]))
+            self.printTable()    
+        
+        print("\n\n\n")    
 
 
 
@@ -151,24 +210,31 @@ cuts = [
            #("met>200", "met > 200"),
         ]
 
-len(cuts)
+outFileName = "prova.txt"
 
-bkg = cutFlow(inFileName, nameTree, cuts )
 
-print (bkg.tree)
+
+outFile = open (outFileName, 'w')
+outFile.close()
+
+
+bkg = cutFlow(inFileName, nameTree, cuts, outFileName )
 bkg.SetTree()
-print(bkg.tree)
-print(bkg.counts)
-
 bkg.SetCuts()
-print(bkg.counts)
+bkg.SetTotalCounts()
 bkg.GetCounts()
 
 
 
 
-print ("g" + ("f" * 4))
+sig = cutFlow("signal_Demo.root",["C1N2_WZ_300_0_NoSys"],cuts,outFileName )
+sig.SetTree()
+sig.SetCuts()
+sig.SetTotalCounts()
+sig.GetCounts()
 
+sig.SetSNR(bkg)
+sig.GetSNR(bkg)
 
 """
 print ("init")
