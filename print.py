@@ -8,7 +8,7 @@ Created on Fri Oct 22 11:52:55 2021
 
 from cutflow import cutFlow
 from config import * 
-import ROOT
+from ROOT import *
 import sys
 
 outFile = open (outFileName, 'w')
@@ -27,7 +27,7 @@ bkg.GetCounts()
 sig = cutFlow(inFileName_sig, nameTree_sig, cuts, outFileName  )
 sig.SetTree()
 sig.SetCuts()
-sig.SetTotalCounts()
+#sig.SetTotalCounts()
 sig.GetCounts()
 
 sig.SetSNR(bkg)
