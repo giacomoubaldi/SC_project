@@ -39,4 +39,4 @@ cuts = [
 
 #common outfile for the read out
 
-outFileName = "prova.txt"
+outFileName = "provaw.txt"

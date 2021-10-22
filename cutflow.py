@@ -207,25 +207,7 @@ class cutFlow:
 
 
 
-outFile = open (outFileName, 'w')
-outFile.close()
-
-
-bkg = cutFlow(inFileName, nameTree, cuts, outFileName )
-bkg.SetTree()
-bkg.SetCuts()
-bkg.SetTotalCounts()
-bkg.GetCounts()
 
 
 
-
-sig = cutFlow("signal_Demo.root",["C1N2_WZ_300_0_NoSys","C1N2_WZ_300_0_NoSys"],cuts,outFileName )
-sig.SetTree()
-sig.SetCuts()
-sig.SetTotalCounts()
-sig.GetCounts()
-
-sig.SetSNR(bkg)
-sig.GetSNR(bkg)
 
