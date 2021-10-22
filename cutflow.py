@@ -92,12 +92,15 @@ class cutFlow:
     def SetTotalCounts(self):
         """  Sum all the data of all the branches for a given cut """ 
         self.totalcounts =[]
-        for j in range(len(self.cuts)):
+        
+        
+        for j in range(len(self.cuts)+1):
             self.totalcounts.append(0)
+            
             
                 
             for i in range(len(self.nameTree)):
-                self.totalcounts[j]= int(self.totalcounts[j])+ int(self.counts[i][j+1])
+                self.totalcounts[j]= int(self.totalcounts[j])+ int(self.counts[i][j])
                 
             #print (self.totalcounts[j])
         
@@ -156,13 +159,18 @@ class cutFlow:
         """do all the S / B ratio for every signal and for every cut. Specifically it is the ratio of a branch of the signal over all the branches of the background"""
         bkg.SetTotalCounts()
         
+        self.SNR = []
         for i in range(len(self.nameTree)):
             self.SNR.append([])
+            
+            self.SNR[i].append("")
+            self.SNR[i][0] = (float (self.counts[i][0]) / float (bkg.totalcounts[0]))
+            
             
                   
             for j in range(len(self.cuts)):
                 self.SNR[i].append("")
-                self.SNR[i][j] = (float(self.counts[i][j+1]) / float(bkg.totalcounts[j]))
+                self.SNR[i][j+1] = (float(self.counts[i][j+1]) / float(bkg.totalcounts[j+1]))
             
                 #print(self.SNR[i][j])
             
@@ -182,12 +190,13 @@ class cutFlow:
         
         for i in range(len(self.nameTree)):
             print("\nTreeBranch: " + self.nameTree[i]);
+            print("STARTING S/B RATIO :"+ str(self.SNR[i][0])+"\n" )
                                     
             self.table = []
             
             self.table.append(["CUT", "S/B RATIO"])
             for j in range(len(self.cuts)):
-                self.table.append([str(self.cuts[j][0]), str(self.SNR[i][j])])
+                self.table.append([str(self.cuts[j][0]), str(self.SNR[i][j+1])])
                 #print("Cut: "+ self.cuts[j][0]+"\t\t\t\t\t\t"+str(self.counts[i][j+1]))
             self.printTable()    
         
@@ -198,7 +207,7 @@ class cutFlow:
 
 inFileName = "bkg2_Demo.root"
 
-nameTree = ["multiboson_NoSys"]
+nameTree = ["multiboson_NoSys","multiboson_NoSys"]
 
 cuts = [
           ("Preselection 1 lepton, $E_\mathrm{T}^\mathrm{miss} > $ 150 GeV, $N_\mathrm{jet30} = $ 2-3, $m_{\mathrm{T}}$ $>$ 50 GeV", "trigMatch_metTrig&&met>150&&nJet30>=2&&nJet30<4&&nLep_base==1&&nLep_signal==1&&mt>50"),
@@ -209,6 +218,9 @@ cuts = [
           ("$E_\mathrm{T}^\mathrm{miss} > $ 200 GeV", "met>200"),
            #("met>200", "met > 200"),
         ]
+
+
+cuts2 = []
 
 outFileName = "prova.txt"
 
@@ -227,7 +239,7 @@ bkg.GetCounts()
 
 
 
-sig = cutFlow("signal_Demo.root",["C1N2_WZ_300_0_NoSys"],cuts,outFileName )
+sig = cutFlow("signal_Demo.root",["C1N2_WZ_300_0_NoSys","C1N2_WZ_300_0_NoSys"],cuts,outFileName )
 sig.SetTree()
 sig.SetCuts()
 sig.SetTotalCounts()
