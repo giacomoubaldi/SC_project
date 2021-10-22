@@ -8,7 +8,7 @@ Created on Fri Oct 22 11:52:55 2021
 
 from cutflow import cutFlow
 from config import * 
-from ROOT import *
+import ROOT
 import sys
 
 outFile = open (outFileName, 'w')
