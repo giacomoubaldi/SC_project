@@ -24,7 +24,7 @@
         "weight"            : "genWeight*eventWeight*pileupWeight*leptonWeight*bTagWeight",
 
         #common outfile for the read out
-        "outFileName"       : "provaw.txt"
+        "outFileName"       : "results_Demo.txt"
 
 
 }

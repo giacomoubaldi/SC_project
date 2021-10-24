@@ -49,7 +49,7 @@ class cutFlow:
     
     def SetTree (self):
         """ Open File  """    
-        
+        self.tree = []
         #Open the file .root
         self.inFile = ROOT.TFile.Open(self.inFileName, "Read")
 
@@ -60,6 +60,7 @@ class cutFlow:
     
      
     def SetDataFrame (self):
+        self.dataframe = []
         self.SetTree()
         """ Associate every tree to the class RDataFrame  """ 
         for i in range(len(self.nameTree)):
@@ -77,6 +78,8 @@ class cutFlow:
         
         for i in range(len(self.nameTree)):
             
+            self.dataframe[i] = self.dataframe[i].Define("weight", self.weight)
+            
             self.counts.append([])
             self.counts_w.append([])
             
@@ -84,19 +87,8 @@ class cutFlow:
             self.counts_w[i].append("")
             
             self.counts[i][0] = int(self.dataframe[i].Count())
-            
-            self.dataframe[i] = self.dataframe[i].Define("weight", self.weight)
             self.counts_w[i][0] = self.dataframe[i].Sum("weight").GetValue()
             
-                        
-           
-            
-            
-            
-            
-            #.Filter("weight>3").Count().GetValue())
-            #print("aedsfsef")
-            #print(self.dataframe[i].GetColumnNames())
             
             
             for j in range(len(self.cuts)):
@@ -234,9 +226,14 @@ class cutFlow:
                 self.table.append([str(self.cuts[j][0]), str(self.SNR[i][j+1]),str(self.SNR_w[i][j+1]) ])
                 #print("Cut: "+ self.cuts[j][0]+"\t\t\t\t\t\t"+str(self.counts[i][j+1]))
             self.printTable()    
-        
+            
+            #c2 = ROOT.TCanvas('c2', 'c2', 700, 500)
+           # myHisto = self.dataframe[i].Histo1D("mt")
+            #myHisto.Draw()
+            #c2.SaveAs("hist.png")
+             
         print("\n\n\n")    
-
+       
 
 
 
