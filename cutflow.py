@@ -42,6 +42,10 @@ class cutFlow:
         
         self.counts = []
         
+        self.counts_w = []
+        
+        self.weight = []
+        
         self.totalcounts = []
         
         self.table = []
@@ -86,7 +90,15 @@ class cutFlow:
                 self.dataframe[i] = self.dataframe[i].Filter(str(self.cuts[j][1]))
                 self.counts[i][j+1] = int(self.dataframe[i].Count())
             
-            
+    
+
+
+
+        
+
+
+
+        
           
             
     def SetTotalCounts(self):
@@ -103,7 +115,34 @@ class cutFlow:
                 self.totalcounts[j]= int(self.totalcounts[j])+ int(self.counts[i][j])
                 
             #print (self.totalcounts[j])
+            
+            
+    def SetSNR(self, bkg ):
+        """do all the S / B ratio for every signal and for every cut. Specifically it is the ratio of a branch of the signal over all the branches of the background"""
+        bkg.SetTotalCounts()
         
+        self.SNR = []
+        for i in range(len(self.nameTree)):
+            self.SNR.append([])
+            
+            self.SNR[i].append("")
+            self.SNR[i][0] = (float (self.counts[i][0]) / float (bkg.totalcounts[0]))
+            
+            
+                  
+            for j in range(len(self.cuts)):
+                self.SNR[i].append("")
+                self.SNR[i][j+1] = (float(self.counts[i][j+1]) / float(bkg.totalcounts[j+1]))
+    
+    
+    
+    def SetAll (self):
+        self.SetTree()
+        self.SetDataFrame()
+        self.SetCuts()
+        self.SetTotalCounts()
+        
+    
     
    
     def printTable (self, borderHorizontal = '-', borderVertical = '|', borderCross = '+'):
@@ -131,9 +170,6 @@ class cutFlow:
     def GetCounts(self):
         """cout the results for all the counts according to the filters applied"""
         
-        
-        
-        
         print("From Tree: "+ self.inFileName);
         print("--------------------------------------")
         
@@ -155,33 +191,12 @@ class cutFlow:
         
 
 
-    def SetSNR(self, bkg ):
-        """do all the S / B ratio for every signal and for every cut. Specifically it is the ratio of a branch of the signal over all the branches of the background"""
-        bkg.SetTotalCounts()
-        
-        self.SNR = []
-        for i in range(len(self.nameTree)):
-            self.SNR.append([])
+
             
-            self.SNR[i].append("")
-            self.SNR[i][0] = (float (self.counts[i][0]) / float (bkg.totalcounts[0]))
-            
-            
-                  
-            for j in range(len(self.cuts)):
-                self.SNR[i].append("")
-                self.SNR[i][j+1] = (float(self.counts[i][j+1]) / float(bkg.totalcounts[j+1]))
-            
-                #print(self.SNR[i][j])
-            
-#   x = [['Length', 'Time(ms)'], [0, 0], [250, 6], [500, 21], [750, 50], [1000, 87], [1250, 135], [1500, 196], [1750, 269], [2000, 351]]
-#   printTable(x)
+
 
     def GetSNR(self, bkg):
         """cout all the S/N according to the filters applied"""
-        
-        
-        
         
         print("Signal / Backroung ratio from");
         print("S: "+ self.inFileName )
