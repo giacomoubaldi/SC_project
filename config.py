@@ -37,6 +37,12 @@ cuts = [
            #("met>200", "met > 200"),
         ]
 
+
+weight = "genWeight*eventWeight*pileupWeight*leptonWeight*bTagWeight"
+#weight = "1"
+
+
+
 #common outfile for the read out
 
 outFileName = "provaw.txt"

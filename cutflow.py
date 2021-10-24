@@ -20,6 +20,8 @@ class cutFlow:
                  
                  cuts = None,
                  
+                 weight = None,
+                 
                  outFileName = None
                  
                  ):
@@ -29,6 +31,8 @@ class cutFlow:
         self.nameTree = nameTree
         
         self.cuts = cuts
+        
+        self.weight = weight
         
         self.outFileName = outFileName
         
@@ -44,13 +48,17 @@ class cutFlow:
         
         self.counts_w = []
         
-        self.weight = []
+        
         
         self.totalcounts = []
+        
+        self.totalcounts_w = []
         
         self.table = []
         
         self.SNR = []
+        
+        self.SNR_w = []
         
         sys.stdout = open(self.outFileName,'a')
 
@@ -69,32 +77,53 @@ class cutFlow:
     
      
     def SetDataFrame (self):
+        self.SetTree()
         """ Associate every tree to the class RDataFrame  """ 
         for i in range(len(self.nameTree)):
             self.dataframe.append(ROOT.RDataFrame(self.tree[i]))
+            #print(self.dataframe[i].GetColumnNames()[2])
         
     
 
     def SetCuts(self):
         """Filter all the data according to specific constraints"""
+        self.counts = []
+        self.counts_w = []
+        
         self.SetDataFrame()
         
         for i in range(len(self.nameTree)):
+            
             self.counts.append([])
+            self.counts_w.append([])
             
             self.counts[i].append("")
+            self.counts_w[i].append("")
+            
             self.counts[i][0] = int(self.dataframe[i].Count())
+            
+            self.dataframe[i] = self.dataframe[i].Define("weight", self.weight)
+            self.counts_w[i][0] = self.dataframe[i].Sum("weight").GetValue()
+            
+                        
+           
+            
+            
+            
+            
+            #.Filter("weight>3").Count().GetValue())
+            #print("aedsfsef")
+            #print(self.dataframe[i].GetColumnNames())
+            
             
             for j in range(len(self.cuts)):
                 self.counts[i].append("")
+                self.counts_w[i].append("")
                 self.dataframe[i] = self.dataframe[i].Filter(str(self.cuts[j][1]))
-                self.counts[i][j+1] = int(self.dataframe[i].Count())
-            
-    
-
-
-
-        
+                self.counts[i][j+1] = self.dataframe[i].Count().GetValue()
+                self.counts_w[i][j+1] = self.dataframe[i].Sum("weight").GetValue()
+                
+                        
 
 
 
@@ -102,17 +131,19 @@ class cutFlow:
           
             
     def SetTotalCounts(self):
+        
         """  Sum all the data of all the branches for a given cut """ 
         self.totalcounts =[]
-        
+        self.totalcounts_w =[]
         
         for j in range(len(self.cuts)+1):
             self.totalcounts.append(0)
-            
+            self.totalcounts_w.append(0)
             
                 
             for i in range(len(self.nameTree)):
-                self.totalcounts[j]= int(self.totalcounts[j])+ int(self.counts[i][j])
+                self.totalcounts[j]= self.totalcounts[j]+ self.counts[i][j]
+                self.totalcounts_w[j]= self.totalcounts_w[j]+ self.counts_w[i][j]
                 
             #print (self.totalcounts[j])
             
@@ -122,23 +153,25 @@ class cutFlow:
         bkg.SetTotalCounts()
         
         self.SNR = []
+        self.SNR_w = []
         for i in range(len(self.nameTree)):
             self.SNR.append([])
+            self.SNR_w.append([])
             
             self.SNR[i].append("")
             self.SNR[i][0] = (float (self.counts[i][0]) / float (bkg.totalcounts[0]))
             
-            
+            self.SNR_w[i].append("")
+            self.SNR_w[i][0] = (float (self.counts_w[i][0]) / float (bkg.totalcounts_w[0]))
                   
             for j in range(len(self.cuts)):
                 self.SNR[i].append("")
                 self.SNR[i][j+1] = (float(self.counts[i][j+1]) / float(bkg.totalcounts[j+1]))
+                self.SNR_w[i].append("")
+                self.SNR_w[i][j+1] = (float(self.counts_w[i][j+1]) / float(bkg.totalcounts_w[j+1]))
     
     
-    
-    def SetAll (self):
-        self.SetTree()
-        self.SetDataFrame()
+    def SetAllCuts (self):
         self.SetCuts()
         self.SetTotalCounts()
         
@@ -160,7 +193,7 @@ class cutFlow:
         print(s)
         for row in self.table:
             print(f.format(*row))
-            if (row == ["CUT", "FILTERED DATA"] or row == ["CUT", "S/B RATIO"]):
+            if (row == ["CUT", "FILTERED DATA", "WEIGHTED DATA"] or row == ["CUT", "S/B RATIO", "S/B WEIGHTED RATIO"]):
                 print(s)      
         print(s)        
         print("\n\n")
@@ -176,13 +209,14 @@ class cutFlow:
         for i in range(len(self.nameTree)):
             print("\nTreeBranch: " + self.nameTree[i]);
             
-            print("STARTING DATA: "+ str(self.counts[i][0])+"\n")
+            print("STARTING DATA: "+ str(self.counts[i][0]))
+            print("STARTING WEIGHTED DATA: "+ str(self.counts_w[i][0])+"\n")
             
             self.table = []
             
-            self.table.append(["CUT", "FILTERED DATA"])
+            self.table.append(["CUT", "FILTERED DATA", "WEIGHTED DATA"])
             for j in range(len(self.cuts)):
-                self.table.append([str(self.cuts[j][0]), str(self.counts[i][j+1])])
+                self.table.append([str(self.cuts[j][0]), str(self.counts[i][j+1]), str(self.counts_w[i][j+1])])
                 #print("Cut: "+ self.cuts[j][0]+"\t\t\t\t\t\t"+str(self.counts[i][j+1]))
             self.printTable()    
         
@@ -209,9 +243,9 @@ class cutFlow:
                                     
             self.table = []
             
-            self.table.append(["CUT", "S/B RATIO"])
+            self.table.append(["CUT", "S/B RATIO", "S/B WEIGHTED RATIO"])
             for j in range(len(self.cuts)):
-                self.table.append([str(self.cuts[j][0]), str(self.SNR[i][j+1])])
+                self.table.append([str(self.cuts[j][0]), str(self.SNR[i][j+1]),str(self.SNR_w[i][j+1]) ])
                 #print("Cut: "+ self.cuts[j][0]+"\t\t\t\t\t\t"+str(self.counts[i][j+1]))
             self.printTable()    
         

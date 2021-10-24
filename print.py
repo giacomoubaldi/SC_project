@@ -14,13 +14,13 @@ import sys
 outFile = open (outFileName, 'w')
 outFile.close()
 
-sig = cutFlow(inFileName_sig, nameTree_sig, cuts, outFileName  )
-sig.SetAll()
+sig = cutFlow(inFileName_sig, nameTree_sig, cuts, weight, outFileName  )
+sig.SetAllCuts()
 sig.GetCounts()
 
 
-bkg = cutFlow(inFileName_bkg, nameTree_bkg, cuts, outFileName )
-bkg.SetAll()
+bkg = cutFlow(inFileName_bkg, nameTree_bkg, cuts, weight, outFileName )
+bkg.SetAllCuts()
 bkg.GetCounts()
 
 sig.SetSNR(bkg)
