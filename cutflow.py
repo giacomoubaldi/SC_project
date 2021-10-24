@@ -26,38 +26,21 @@ class cutFlow:
                  
                  ):
         
-        self.inFileName= inFileName
-                        
+        self.inFileName= inFileName          
         self.nameTree = nameTree
-        
-        self.cuts = cuts
-        
-        self.weight = weight
-        
         self.outFileName = outFileName
-        
         self.inFile = ""
-        
         self.outFile = ""
-            
+        self.cuts = cuts
+        self.weight = weight
         self.tree = []
-                         
         self.dataframe = []
-        
-        self.counts = []
-        
-        self.counts_w = []
-        
-        
-        
-        self.totalcounts = []
-        
-        self.totalcounts_w = []
-        
         self.table = []
-        
+        self.counts = []
+        self.counts_w = []
+        self.totalcounts = []
+        self.totalcounts_w = []
         self.SNR = []
-        
         self.SNR_w = []
         
         sys.stdout = open(self.outFileName,'a')
@@ -203,6 +186,7 @@ class cutFlow:
     def GetCounts(self):
         """cout the results for all the counts according to the filters applied"""
         
+        print("--------------------------------------")
         print("From Tree: "+ self.inFileName);
         print("--------------------------------------")
         
@@ -232,15 +216,17 @@ class cutFlow:
     def GetSNR(self, bkg):
         """cout all the S/N according to the filters applied"""
         
-        print("Signal / Backroung ratio from");
+        print("--------------------------------------")
+        print("Signal / Background ratio from");
         print("S: "+ self.inFileName )
         print("B: "+ bkg.inFileName)
         print("--------------------------------------")
         
         for i in range(len(self.nameTree)):
             print("\nTreeBranch: " + self.nameTree[i]);
-            print("STARTING S/B RATIO :"+ str(self.SNR[i][0])+"\n" )
-                                    
+            print("STARTING S/B RATIO :"+ str(self.SNR[i][0]) )
+            print("STARTING WEIGHTED S/B RATIO :"+ str(self.SNR_w[i][0])+"\n" )   
+                  
             self.table = []
             
             self.table.append(["CUT", "S/B RATIO", "S/B WEIGHTED RATIO"])

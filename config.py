@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Oct 22 11:46:10 2021
-
 @author: giacomo
 """
 
@@ -14,14 +13,14 @@ Created on Fri Oct 22 11:46:10 2021
 
 inFileName_sig = "signal_Demo.root"
 
-nameTree_sig = ["C1N2_WZ_300_0_NoSys","C1N2_WZ_300_0_NoSys"]
+nameTree_sig = ["C1N2_WZ_300_0_NoSys"]
 
 
 #file .root for the background and the branches i am interested in
 
 inFileName_bkg = "bkg2_Demo.root"
 
-nameTree_bkg = ["multiboson_NoSys","multiboson_NoSys"]
+nameTree_bkg = ["multiboson_NoSys"]
 
 
 
