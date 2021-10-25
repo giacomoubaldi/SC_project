@@ -245,7 +245,7 @@ class cutFlow:
             self.printTable()    
         
         print("\n\n\n")
-        
+        logging.warning("Results of the cut of "+self.inFileName+" on "+ self.outFileName)
         
 
 
@@ -281,7 +281,7 @@ class cutFlow:
             #c2.SaveAs("hist.png")
              
         print("\n\n\n")    
-       
+        logging.warning("Results of the S/N on "+ self.outFileName)
 
 
 
