@@ -8,6 +8,7 @@ Created on Tue Oct 19 14:33:23 2021
 
 import ROOT
 import sys
+import logging
 
 
 
@@ -51,23 +52,42 @@ class cutFlow:
         """ Open File  """    
         self.tree = []
         #Open the file .root
-        self.inFile = ROOT.TFile.Open(self.inFileName, "Read")
-
+        
+        try:
+            self.inFile = ROOT.TFile.Open(self.inFileName, "Read")
+        except:
+            logging.warning("\033[91mError: please insert the right name of the input  dataset\033[1;0m") 
+            sys.exit (1)
     
         #Retrieve the TTree from the file
         for i in range(len(self.nameTree)):
-           self.tree.append(self.inFile.Get(self.nameTree[i]))
+            
+            if self.nameTree[i] not in [x.GetName() for x in list(self.inFile.GetListOfKeys())]:
+                logging.warning("\033[91mError: the Tree '" + self.inFileName + "' does not contain this brench: '"+ self.nameTree[i] +"' . Please be sure of the name of the brench you are interested in.\n \033[1;0m")
+                sys.exit (1)
+            else:
+                self.tree.append(self.inFile.Get(self.nameTree[i]))
     
      
     def SetDataFrame (self):
+        """ Associate every tree to the class RDataFrame  """ 
         self.dataframe = []
         self.SetTree()
-        """ Associate every tree to the class RDataFrame  """ 
         for i in range(len(self.nameTree)):
             self.dataframe.append(ROOT.RDataFrame(self.tree[i]))
-            #print(self.dataframe[i].GetColumnNames()[2])
+            
+            try:
+                self.dataframe[i] = self.dataframe[i].Define("weight", self.weight)
+            except:
+                logging.warning("\033[91mERROR: Please be sure you have written the weight in the right way in your config file\033[1;0m") 
+                sys.exit (1)
         
-    
+        
+       
+            
+        
+        
+        
 
     def SetCuts(self):
         """Filter all the data according to specific constraints and Sum all the data of all the branches for a given cut"""
@@ -81,9 +101,15 @@ class cutFlow:
         self.totalcounts.append(0)
         self.totalcounts_w.append(0)
         
+        
+        
         for i in range(len(self.nameTree)):
             
-            self.dataframe[i] = self.dataframe[i].Define("weight", self.weight)
+            
+            
+                
+            
+                
             
             self.counts.append([])
             self.counts_w.append([])
@@ -101,7 +127,15 @@ class cutFlow:
             for j in range(len(self.cuts)):
                 self.counts[i].append("")
                 self.counts_w[i].append("")
-                self.dataframe[i] = self.dataframe[i].Filter(str(self.cuts[j][1]))
+                
+                try:
+                    self.dataframe[i] = self.dataframe[i].Filter(str(self.cuts[j][1]))
+                except:
+                    logging.warning("\033[91mERROR: Please be sure you have written the "+str(j+1)+"° cuts in the right way in your config file\033[1;0m") 
+                    sys.exit (1)
+        
+                
+                
                 self.counts[i][j+1] = self.dataframe[i].Count().GetValue()
                 self.counts_w[i][j+1] = self.dataframe[i].Sum("weight").GetValue()
                 
