@@ -70,11 +70,16 @@ class cutFlow:
     
 
     def SetCuts(self):
-        """Filter all the data according to specific constraints"""
+        """Filter all the data according to specific constraints and Sum all the data of all the branches for a given cut"""
         self.counts = []
         self.counts_w = []
         
+        self.totalcounts =[]
+        self.totalcounts_w =[]
+        
         self.SetDataFrame()
+        self.totalcounts.append(0)
+        self.totalcounts_w.append(0)
         
         for i in range(len(self.nameTree)):
             
@@ -89,6 +94,8 @@ class cutFlow:
             self.counts[i][0] = int(self.dataframe[i].Count())
             self.counts_w[i][0] = self.dataframe[i].Sum("weight").GetValue()
             
+            self.totalcounts[0]= self.totalcounts[0]+ self.counts[i][0]
+            self.totalcounts_w[0]= self.totalcounts_w[0]+ self.counts_w[i][0]  
             
             
             for j in range(len(self.cuts)):
@@ -98,34 +105,41 @@ class cutFlow:
                 self.counts[i][j+1] = self.dataframe[i].Count().GetValue()
                 self.counts_w[i][j+1] = self.dataframe[i].Sum("weight").GetValue()
                 
-                        
+                
+                self.totalcounts.append(0)
+                self.totalcounts_w.append(0)
+                self.totalcounts[j+1]= self.totalcounts[j+1]+ self.counts[i][j+1]
+                self.totalcounts_w[j+1]= self.totalcounts_w[j+1]+ self.counts_w[i][j+1]        
 
-
+                
+       # for j in range(len(self.cuts)+1):
+            #print(self.totalcounts[j],self.totalcounts_w[j])
 
         
           
-            
-    def SetTotalCounts(self):
+       
+    #def SetTotalCounts(self):
         
-        """  Sum all the data of all the branches for a given cut """ 
-        self.totalcounts =[]
-        self.totalcounts_w =[]
+       # """  Sum all the data of all the branches for a given cut """ 
+        #self.totalcounts =[]
+        #self.totalcounts_w =[]
         
-        for j in range(len(self.cuts)+1):
-            self.totalcounts.append(0)
-            self.totalcounts_w.append(0)
+        #for j in range(len(self.cuts)+1):
+            #self.totalcounts.append(0)
+           # self.totalcounts_w.append(0)
             
                 
-            for i in range(len(self.nameTree)):
-                self.totalcounts[j]= self.totalcounts[j]+ self.counts[i][j]
-                self.totalcounts_w[j]= self.totalcounts_w[j]+ self.counts_w[i][j]
+            #for i in range(len(self.nameTree)):
+                #self.totalcounts[j]= self.totalcounts[j]+ self.counts[i][j]
+                #self.totalcounts_w[j]= self.totalcounts_w[j]+ self.counts_w[i][j]
                 
             #print (self.totalcounts[j])
             
             
     def SetSNR(self, bkg ):
         """do all the S / B ratio for every signal and for every cut. Specifically it is the ratio of a branch of the signal over all the branches of the background"""
-        bkg.SetTotalCounts()
+        #bkg.SetTotalCounts()
+        bkg.SetCuts()
         
         self.SNR = []
         self.SNR_w = []
@@ -148,7 +162,7 @@ class cutFlow:
     
     def SetAllCuts (self):
         self.SetCuts()
-        self.SetTotalCounts()
+        #self.SetTotalCounts()
         
     
     

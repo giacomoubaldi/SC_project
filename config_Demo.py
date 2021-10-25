@@ -3,11 +3,11 @@
 
         #file .root for the signal and the branches i am interested in
         "inFileName_sig"    : "signal_Demo.root",
-        "nameTree_sig"      : ["C1N2_WZ_300_0_NoSys"],
+        "nameTree_sig"      : ["C1N2_WZ_300_0_NoSys","C1N2_WZ_300_0_NoSys","C1N2_WZ_300_0_NoSys"],
 
         #file .root for the background and the branches i am interested in
         "inFileName_bkg"    : "bkg2_Demo.root",
-        "nameTree_bkg"      : ["multiboson_NoSys"],
+        "nameTree_bkg"      : ["multiboson_NoSys","multiboson_NoSys","multiboson_NoSys","multiboson_NoSys"],
 
         #common cuts for the cutflow
         "cuts"              : [
@@ -24,7 +24,7 @@
         "weight"            : "genWeight*eventWeight*pileupWeight*leptonWeight*bTagWeight",
 
         #common outfile for the read out
-        "outFileName"       : "results_Demo.txt"
+        "outFileName"       : "results_Demo2.txt"
 
 
 }
