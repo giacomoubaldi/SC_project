@@ -13,12 +13,14 @@ import logging
 
 
 
-"""The script runs over a file .root and asks for a config file"""
+#The script runs over a file .root and asks for a config file
+#If no 1 arg is given, then exit
 if len(sys.argv) != 2:
     print ("\033[91mPlease type:  %s <config file>\033[1;0m"%(sys.argv [0]))
     sys.exit (1)
 config_file = sys.argv[1]
 
+#If the arg is not a real file, then exit
 try:
     file = open(config_file, "r")
     contents = file.read()
@@ -26,7 +28,8 @@ try:
 except:
     logging.warning("\033[91mPlease insert an existing file\033[1;0m") 
     sys.exit (1)
-    
+
+#If the file does not contain a dictionary variable, then exit  
 try:
     dictionary = ast.literal_eval(contents)
 except:
@@ -34,7 +37,7 @@ except:
     sys.exit (1)
 
 
-
+#If the file does not contain a dictionary variable with the needed keys, then exit 
 try:
     inFileName_sig = dictionary["inFileName_sig"]
     nameTree_sig = dictionary["nameTree_sig"]
@@ -47,18 +50,20 @@ except:
     logging.warning("\033[91mPlease insert the right dictionary variable with the following keys: \n ""inFileName_sig"" \n ""nameTree_sig"" \n ""inFileName_bkg"" \n ""nameTree_bkg"" \n ""cuts"" \n ""weight"" \n ""outFileName\033[1;0m") 
     sys.exit (1)
 
+#Open the output file in order to cancell all the previous data
 file = open (outFileName, 'w')
 file.close()
 
-
+#Create the istance of signal, set and print the cutflow
 sig = cutFlow(inFileName_sig, nameTree_sig, cuts, weight, outFileName  )
 sig.SetCuts()
 sig.GetCounts()
 
-
+#Create the istance of background, set and print the cutflow
 bkg = cutFlow(inFileName_bkg, nameTree_bkg, cuts, weight, outFileName )
 bkg.SetCuts()
 bkg.GetCounts()
 
+#Set and print the S/B ratio between signal and background
 sig.SetSNR(bkg)
 sig.GetSNR(bkg)
