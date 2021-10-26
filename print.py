@@ -52,12 +52,12 @@ file.close()
 
 
 sig = cutFlow(inFileName_sig, nameTree_sig, cuts, weight, outFileName  )
-sig.SetAllCuts()
+sig.SetCuts()
 sig.GetCounts()
 
 
 bkg = cutFlow(inFileName_bkg, nameTree_bkg, cuts, weight, outFileName )
-bkg.SetAllCuts()
+bkg.SetCuts()
 bkg.GetCounts()
 
 sig.SetSNR(bkg)

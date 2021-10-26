@@ -13,7 +13,78 @@ import logging
 
 
 class cutFlow:
-    """help"""
+    '''
+    This class takes a TTree from a .root dataset and filters all the events according to cuts given by the user.
+    At the end, the efficiency of the cuts is showed by the signal / background ratio.
+
+    Args
+    ----------
+    
+        inFileName: string
+            name of the .root dataset 
+        
+        nameTree: list of string
+            array of all the branches of the TTree I am interested in
+        
+        cuts: list of string 
+            array of all the cuts to apply to my dataset
+            
+        weight: string
+            a new column would be added in the dataset where every event would be weighted according to the string 
+            
+        outFileName: string
+           name of the file where to save the results 
+
+    Attributes
+    ----------
+    
+        self.inFileName: string
+            take the homonym arg value
+            
+        self.nameTree: string
+            take the homonym arg value
+        
+        self.outFileName: string
+            take the homonym arg value
+        
+        self.cuts: string
+            take the homonym arg value
+            
+        self.weight: string
+            take the homonym arg value
+                
+        self.inFile: ROOT.TFile
+            it will open the input .root dataset in a TFile
+        
+        self.tree: []
+            list of all the branches of the TFile
+        
+        self.dataframe: []
+            list of all the branches but using the ROOT Class RDataFrame rather than TFile to exploit specific methods
+        
+        self.counts: []
+            list of all the events after a cut for every branch of the dataset
+        
+        self.counts_w = []
+            list of all the weighted events after a cut for every branch of the dataset
+        
+        self.totalcounts = []
+            list of all the events (summed for all the branches) after a cut
+            
+        self.totalcounts_w = []
+            list of all the weighted events (summed for all the branches) after a cut
+            
+        self.SNR = []
+            list of the ratio between Signal counts and background counts between events for every branch of the signal
+        
+        self.SNR_w = []
+            list of the ratio between Signal counts and background counts between weighted events for every branch of the signal
+        
+        self.table = []
+            list of strings to create a table for the Get - methods 
+    
+    '''
+    
     def __init__(self,
                  inFileName= None,
                                   
@@ -31,7 +102,6 @@ class cutFlow:
         self.nameTree = nameTree
         self.outFileName = outFileName
         self.inFile = ""
-        self.outFile = ""
         self.cuts = cuts
         self.weight = weight
         self.tree = []
@@ -49,7 +119,13 @@ class cutFlow:
 
     
     def SetTree (self):
-        """ Open File  """    
+        """ 
+        Open .root dataset and associate the branches to a TFile list variable.
+        Some checks are done to be sure the name of the file and of the branches are inserted correctly.
+        
+        """    
+        
+        
         self.tree = []
         #Open the file .root
         
@@ -70,7 +146,14 @@ class cutFlow:
     
      
     def SetDataFrame (self):
-        """ Associate every tree to the class RDataFrame  """ 
+        """ 
+        Associate the TTree list to a RDataFrame list. It's still an array variable of all the branches of the starting dataset,
+            but with the RDataFrame variable I am able to exploit specific methods like Filter() and Count()
+        The column of the value of the weighted event is added to the RDataSet.
+        Some checks are done to be sure the weight is inserted correctly.
+        
+        """ 
+        
         self.dataframe = []
         self.SetTree()
         for i in range(len(self.nameTree)):
@@ -90,7 +173,15 @@ class cutFlow:
         
 
     def SetCuts(self):
-        """Filter all the data according to specific constraints and Sum all the data of all the branches for a given cut"""
+        """
+        For every branch, a cut is done and all the events which remains are counted and collente in the array counts.
+        Parallelly, all the events of all the branches are summed into totalcounts
+        The same is done but with weighted data for counts_w and totalcounts_w.
+        Some checks are done to be sure the cut string is inserted correctly.
+        
+        
+        """
+        
         self.counts = []
         self.counts_w = []
         
@@ -98,18 +189,13 @@ class cutFlow:
         self.totalcounts_w =[]
         
         self.SetDataFrame()
+        
         self.totalcounts.append(0)
         self.totalcounts_w.append(0)
         
         
         
         for i in range(len(self.nameTree)):
-            
-            
-            
-                
-            
-                
             
             self.counts.append([])
             self.counts_w.append([])
@@ -145,33 +231,16 @@ class cutFlow:
                 self.totalcounts[j+1]= self.totalcounts[j+1]+ self.counts[i][j+1]
                 self.totalcounts_w[j+1]= self.totalcounts_w[j+1]+ self.counts_w[i][j+1]        
 
-                
-       # for j in range(len(self.cuts)+1):
-            #print(self.totalcounts[j],self.totalcounts_w[j])
-
-        
-          
-       
-    #def SetTotalCounts(self):
-        
-       # """  Sum all the data of all the branches for a given cut """ 
-        #self.totalcounts =[]
-        #self.totalcounts_w =[]
-        
-        #for j in range(len(self.cuts)+1):
-            #self.totalcounts.append(0)
-           # self.totalcounts_w.append(0)
-            
-                
-            #for i in range(len(self.nameTree)):
-                #self.totalcounts[j]= self.totalcounts[j]+ self.counts[i][j]
-                #self.totalcounts_w[j]= self.totalcounts_w[j]+ self.counts_w[i][j]
-                
-            #print (self.totalcounts[j])
             
             
     def SetSNR(self, bkg ):
-        """do all the S / B ratio for every signal and for every cut. Specifically it is the ratio of a branch of the signal over all the branches of the background"""
+        """
+        For every brach, the Signal / Background ratio is computed, considering every cut.
+        In particular, every branch of signal is divided for ALL the branches of background.
+        N.B.: as argument you can choose every kind of cutFlow istance, so be careful. 
+                
+        """
+        
         #bkg.SetTotalCounts()
         bkg.SetCuts()
         
@@ -193,15 +262,15 @@ class cutFlow:
                 self.SNR_w[i].append("")
                 self.SNR_w[i][j+1] = (float(self.counts_w[i][j+1]) / float(bkg.totalcounts_w[j+1]))
     
-    
-    def SetAllCuts (self):
-        self.SetCuts()
-        #self.SetTotalCounts()
-        
-    
+   
     
    
     def printTable (self, borderHorizontal = '-', borderVertical = '|', borderCross = '+'):
+        """
+        A method to print a table. It takes an array of n columns and m raws (self.table) and print all of them.
+        
+        """
+        
         cols = [list(x) for x in zip(*self.table)]
         lengths = [max(map(len, map(str, col))) for col in cols]
         f = borderVertical + borderVertical.join(' {:>%d} ' % l for l in lengths) + borderVertical
@@ -224,8 +293,12 @@ class cutFlow:
     
     #@staticmethod
     def GetCounts(self):
-        """cout the results for all the counts according to the filters applied"""
+        """
+        It stamps all the results of the counts of events of a given branch after the cuts.
+        The results are arranged in a text-table for a better read-out
         
+        """
+                
         print("--------------------------------------")
         print("From Tree: "+ self.inFileName);
         print("--------------------------------------")
@@ -236,15 +309,15 @@ class cutFlow:
             print("STARTING DATA: "+ str(self.counts[i][0]))
             print("STARTING WEIGHTED DATA: "+ str(self.counts_w[i][0])+"\n")
             
-            self.table = []
-            
+            self.table = []            
             self.table.append(["CUT", "FILTERED DATA", "WEIGHTED DATA"])
+            
             for j in range(len(self.cuts)):
                 self.table.append([str(self.cuts[j][0]), str(self.counts[i][j+1]), str(self.counts_w[i][j+1])])
-                #print("Cut: "+ self.cuts[j][0]+"\t\t\t\t\t\t"+str(self.counts[i][j+1]))
-            self.printTable()    
-        
+            
+            self.printTable()        
         print("\n\n\n")
+       
         logging.warning("Results of the cut of "+self.inFileName+" on "+ self.outFileName)
         
 
@@ -254,7 +327,11 @@ class cutFlow:
 
 
     def GetSNR(self, bkg):
-        """cout all the S/N according to the filters applied"""
+        """
+        It stamps all the results of the S/B ratio of after the cuts.
+        The results are arranged in a text-table for a better read-out
+        
+        """
         
         print("--------------------------------------")
         print("Signal / Background ratio from");
@@ -267,21 +344,20 @@ class cutFlow:
             print("STARTING S/B RATIO :"+ str(self.SNR[i][0]) )
             print("STARTING WEIGHTED S/B RATIO :"+ str(self.SNR_w[i][0])+"\n" )   
                   
-            self.table = []
-            
+            self.table = []            
             self.table.append(["CUT", "S/B RATIO", "S/B WEIGHTED RATIO"])
+           
             for j in range(len(self.cuts)):
-                self.table.append([str(self.cuts[j][0]), str(self.SNR[i][j+1]),str(self.SNR_w[i][j+1]) ])
-                #print("Cut: "+ self.cuts[j][0]+"\t\t\t\t\t\t"+str(self.counts[i][j+1]))
+                self.table.append([str(self.cuts[j][0]), str(self.SNR[i][j+1]),str(self.SNR_w[i][j+1]) ])               
             self.printTable()    
             
             #c2 = ROOT.TCanvas('c2', 'c2', 700, 500)
            # myHisto = self.dataframe[i].Histo1D("mt")
             #myHisto.Draw()
-            #c2.SaveAs("hist.png")
-             
-        print("\n\n\n")    
-        logging.warning("Results of the S/N on "+ self.outFileName)
+            #c2.SaveAs("hist.png")             
+        print("\n\n\n")  
+        
+        logging.warning("Results of the S/B ("+self.inFileName+" / "+ bkg.inFileName+" ) on "+ self.outFileName)
 
 
 
