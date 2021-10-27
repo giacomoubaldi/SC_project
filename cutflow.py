@@ -114,7 +114,7 @@ class cutFlow:
         self.SNR = []
         self.SNR_w = []
         
-        sys.stdout = open(self.outFileName,'a')
+        
 
 
     

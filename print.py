@@ -10,6 +10,7 @@ from cutflow import cutFlow
 import sys
 import ast
 import logging
+import pandas as pd
 
 
 
@@ -55,6 +56,10 @@ except:
 file = open (outFileName, 'w')
 file.close()
 
+#make all the prin() to stamp on the file 'outFileName' rather than on terminal
+holder = sys.stdout
+sys.stdout = open(outFileName,'a')
+
 #Create the istance of signal, set and print the cutflow
 sig = cutFlow(inFileName_sig, nameTree_sig, cuts, weight, outFileName  )
 sig.SetCuts()
@@ -68,3 +73,15 @@ bkg.GetCounts()
 #Set and print the S/B ratio between signal and background
 sig.SetSNR(bkg)
 sig.GetSNR(bkg)
+
+#print back on terminal
+sys.stdout = holder
+
+
+pd.DataFrame.from_dict(data=dictionary, orient='index').to_csv('dict_file.csv', header=False)
+
+
+
+
+
+
