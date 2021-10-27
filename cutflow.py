@@ -210,7 +210,7 @@ class cutFlow:
             
             #for every i element, the j=0 element is the one when no cut is done, so of the starting data
             #the method dataframe[i].Count() just counts how many events are present in the i-sh branch
-            self.counts[i][0] = int(self.dataframe[i].Count())
+            self.counts[i][0] = self.dataframe[i].Count().GetValue()
             #the metod dataframe[i].Sum("weight").GetValue() sums the weight of all the events which are present in the i-sh branch
             self.counts_w[i][0] = self.dataframe[i].Sum("weight").GetValue()
             
