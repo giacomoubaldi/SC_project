@@ -10,9 +10,33 @@ from cutflow import cutFlow
 import sys
 import ast
 import logging
-import pandas as pd
+#import pandas as pd
+
+import os
+import subprocess
 
 
+
+
+
+#---------------------------------
+#Ask to call Cutflow and TMVA
+answer=''
+while( not (answer == "y" or answer == "yes" or answer == "n" or answer == "no" )):
+	print( " Do you want to run the Multivariate Data analysys? y/n ")
+	answer = raw_input()
+
+if (answer == "n" or answer == "no"):
+	tmva_call =False
+elif (answer == "y" or answer == "yes"):
+ 	tmva_call = True
+
+
+
+
+
+#----------------------
+#Parsing and controll of the config file
 
 
 #The script runs over a file .root and asks for a config file
@@ -48,15 +72,29 @@ try:
     cuts = dictionary["cuts"]
     weight = dictionary["weight"]
     outFileName = dictionary["outFileName"]
+    if (tmva_call == True):		#control the keys needed by tmva analysys only if it would be called
+    	TMVA_variable = dictionary["TMVA_variable"]
+    	TMVA_cut_sig = dictionary["TMVA_cut_sig"]
+    	TMVA_cut_bkg = dictionary["TMVA_cut_bkg"]
+    	TMVA_outFileName = dictionary["TMVA_outFileName"]
+    
 except:
     logging.warning("\033[91mPlease insert the right dictionary variable with the following keys: \n ""inFileName_sig"" \n ""nameTree_sig"" \n ""inFileName_bkg"" \n ""nameTree_bkg"" \n ""cuts"" \n ""weight"" \n ""outFileName\033[1;0m") 
+    if (tmva_call == True): #if TMVA would be called
+    	logging.warning("\033[91m For TMVA: \n \"TMVA_variable\" \n \"TMVA_cut_sig\" \n \"TMVA_cut_bkg\" \n \"TMVA_outFileName\"\033[1;0m")
     sys.exit (1)
+
+
+
+#--------------
+#Run the cutflow
+
 
 #Open the output file in order to cancell all the previous data
 file = open (outFileName, 'w')
 file.close()
 
-#make all the prin() to stamp on the file 'outFileName' rather than on terminal
+#make all the print() to stamp on the file 'outFileName' rather than on terminal
 holder = sys.stdout
 sys.stdout = open(outFileName,'a')
 
@@ -78,10 +116,17 @@ sig.GetSNR(bkg)
 sys.stdout = holder
 
 
-pd.DataFrame.from_dict(data=dictionary, orient='index').to_csv('dict_file.csv', header=False)
 
 
 
+#--------
+#Run the Multi Variate Analysys 
+
+
+
+
+ #pd.DataFrame.from_dict(data=dictionary, orient='index').to_csv('dict_file.csv', header=False)
+#os.system ("root -l \"tmva_train.C(dis)\"")
 
 
 

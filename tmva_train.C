@@ -120,9 +120,10 @@ void Config(string& inFileName_sig, string&  inFileName_bkg, string&  TMVA_outFi
 
 
 
-void tmva_train()
-{
 
+void tmva_train(int a)
+{
+cout << "argggggggggggggggggggggggggggggggggggg " << a<< endl; 
 //--------------
 //Take value from config file
 string inFileName_sig;
@@ -137,7 +138,7 @@ int length_TMVA_variable = 0;
 int length_nameTree_sig = 0;
 int length_nameTree_bkg = 0;
 
-
+exit(EXIT_SUCCESS);
 
 
 Config(inFileName_sig, inFileName_bkg, TMVA_outFileName, TMVA_cutsig, TMVA_cutbkg, TMVA_variable , nameTree_sig, nameTree_bkg,length_TMVA_variable, length_nameTree_sig, length_nameTree_bkg );
@@ -152,7 +153,20 @@ Config(inFileName_sig, inFileName_bkg, TMVA_outFileName, TMVA_cutsig, TMVA_cutbk
 auto inputFile_signal = TFile::Open(inFileName_sig.c_str()); // .c_str() stands for the conversion of the variable from std::string to object of type const char *
 auto inputFile_bkg = TFile::Open(inFileName_bkg.c_str());
 
+/*
+TFile * outputFile = new TFile[length_nameTree_sig];
+for (int i=0; i < length_nameTree_sig; i++) {
+string output =  TMVA_outFileName.c_str();
+output= output+"_"+i+".root";
+cout <<output << endl;   
+outputFile[i] = TFile::Open(output, "RECREATE");
+}
+
+*/
+
 auto outputFile = TFile::Open(TMVA_outFileName.c_str(), "RECREATE");
+
+//exit(EXIT_SUCCESS);
 
 TMVA::Factory factory("TMVAClassification", outputFile,
 "!V:ROC:!Correlations:!Silent:Color:"
