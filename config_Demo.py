@@ -34,6 +34,9 @@
             #N.B.: everytime you run the program, the output file would be rewashed
         "outFileName"       : "results_Demo.txt",
         
+        
+        #common outfile for TMVA analysis
+                    
         "TMVA_variable"     : ["nLep_base" , "nLep_signal" , "lep1Pt" , "nJet30" , "nBJet30_DL1" ," met" , "met_Phi" ,"nFatjets" , "mt"],
         
         "TMVA_cut_sig"	     : "met>100&&nJet25>=1&&nLep_base<=2&&nLep_signal<=2&&mt>50",
