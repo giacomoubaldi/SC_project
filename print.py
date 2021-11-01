@@ -130,7 +130,7 @@ sys.stdout = holder
 if (tmva_call == True):
 	print( "Push ENTER to start TMVA analysis")
 	raw_input()
-	my_tmva(inFileName_sig, 'C1N2_WZ_300_0_NoSys', inFileName_bkg, nameTree_bkg, TMVA_variable , TMVA_cut_sig, TMVA_cut_bkg, "a")
+	my_tmva(inFileName_sig, nameTree_sig, inFileName_bkg, nameTree_bkg, TMVA_variable , TMVA_cut_sig, TMVA_cut_bkg, TMVA_outFileName)
 
 
 
