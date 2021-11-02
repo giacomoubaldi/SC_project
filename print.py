@@ -9,7 +9,7 @@ from cutflow import cutFlow
 from tmva_train import my_tmva
 
 
-#import ROOT
+import ROOT
 import sys
 import ast
 import logging
@@ -130,7 +130,35 @@ sys.stdout = holder
 if (tmva_call == True):
 	print( "Push ENTER to start TMVA analysis")
 	raw_input()
-	my_tmva(inFileName_sig, nameTree_sig, inFileName_bkg, nameTree_bkg, TMVA_variable , TMVA_cut_sig, TMVA_cut_bkg, TMVA_outFileName)
+	
+	
+	#os.system("root")
+	#print("string a = \"wewe\"")
+	#os.system("grep %s" % a)
+	#os.system('.x \"tmva_train.C(a)\"')
+	#cmd = 'root -l \"tmva_train.C({0})\"'.format(c)
+	#os.system (cmd)
+	
+	
+	#('ls -%s' option)
+	#gROOT.ProcessLine(".x tmva_train.C('"+c+"')");
+	#gROOT.ProcessLine("string c = \"ciao\"")
+	#gROOT.ProcessLine(".x tmva_train.C($c)"); 
+	
+	filez = open('tmva_train.C', 'r').read()
+	ROOT.gInterpreter.Declare(filez)
+	y = ROOT.tmva_train(inFileName_sig, nameTree_sig, inFileName_bkg, nameTree_bkg, TMVA_variable , TMVA_cut_sig, TMVA_cut_bkg, TMVA_outFileName )
+	
+	
+	
+	
+	
+	
+	
+	#print("\nfrom .py:")
+	
+	
+	#my_tmva(inFileName_sig, nameTree_sig, inFileName_bkg, nameTree_bkg, TMVA_variable , TMVA_cut_sig, TMVA_cut_bkg, TMVA_outFileName)
 
 
 

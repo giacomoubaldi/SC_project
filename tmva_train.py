@@ -79,7 +79,8 @@ def my_tmva(inFileName_sig, nameTree_sig, inFileName_bkg, nameTree_bkg, TMVA_var
 		factory[i].BookMethod(dataloader[i], TMVA.Types.kMLP, "MLP", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:!UseRegulator" )
 		#H:!V:HiddenLayers=3
 
-
+		exit();
+		
 		# Train MVAs
 		#errors concerning wrong name of variables for the MVA and cuts are found here
 		try:
@@ -135,7 +136,3 @@ def my_tmva(inFileName_sig, nameTree_sig, inFileName_bkg, nameTree_bkg, TMVA_var
 #TMVA_variable =   ["nLep_base" , "nLep_signal" , "lep1Pt" , "nJet30" , "nBJet30_DL1" ," met" , "met_Phi" ,"nFatjets" , "mt"]
 #TMVA_cut_bkg = "met>100&&nJet25>=1&&nLep_base<=2&&nLep_signal<=2&&mt>50"
 #my_tmva("signal_Demo.root", nameTree_sig, "bkg2_Demo.root", nameTree_bkg, TMVA_variable , "", TMVA_cut_bkg, "TMVAOutput_demo")
-
-
-
-
