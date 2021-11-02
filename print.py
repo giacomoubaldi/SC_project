@@ -132,6 +132,16 @@ if (tmva_call == True):
 	raw_input()
 	
 	
+	#Read the macro of tmva in the variable 'filez'	
+	filez = open('tmva_train.C', 'r').read()
+	#Since the macro tmva_train(...) is written in c++, ROOT.gInterpreter let it open in a python enviroment
+	ROOT.gInterpreter.Declare(filez)
+	#call of the function interpreted
+	y = ROOT.tmva_train(inFileName_sig, nameTree_sig, inFileName_bkg, nameTree_bkg, TMVA_variable , TMVA_cut_sig, TMVA_cut_bkg, TMVA_outFileName )
+	
+	
+	
+	
 	#os.system("root")
 	#print("string a = \"wewe\"")
 	#os.system("grep %s" % a)
@@ -145,19 +155,10 @@ if (tmva_call == True):
 	#gROOT.ProcessLine("string c = \"ciao\"")
 	#gROOT.ProcessLine(".x tmva_train.C($c)"); 
 	
-	filez = open('tmva_train.C', 'r').read()
-	ROOT.gInterpreter.Declare(filez)
-	y = ROOT.tmva_train(inFileName_sig, nameTree_sig, inFileName_bkg, nameTree_bkg, TMVA_variable , TMVA_cut_sig, TMVA_cut_bkg, TMVA_outFileName )
-	
-	
-	
-	
-	
-	
 	
 	#print("\nfrom .py:")
 	
-	
+	#call of the function tmva written in .py code
 	#my_tmva(inFileName_sig, nameTree_sig, inFileName_bkg, nameTree_bkg, TMVA_variable , TMVA_cut_sig, TMVA_cut_bkg, TMVA_outFileName)
 
 
