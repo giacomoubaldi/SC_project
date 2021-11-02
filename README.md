@@ -12,16 +12,13 @@ See [this link](https://it.wikipedia.org/wiki/Sudoku) from Wikipedia to find out
 ## TMVA
 
 ### Installation
-to install the application clone the repository [sudoku_solver](https://github.com/giacomoubaldi/sudoku_solver) and use pip:
+to install the application clone the repository [SC_project](https://github.com/giacomoubaldi/SC_project.git):
 
 ```
-git clone https://github.com/giacomoubaldi/sudoku_solver.git
-cd sudoku_solver
-python sudoku.py
+git clone https://github.com/giacomoubaldi/SC_project.git
 ```
 
 ### Version
 
 ### Run
-
 
