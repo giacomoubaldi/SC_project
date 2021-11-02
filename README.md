@@ -2,7 +2,7 @@
 
 
 
-# CutFlow & Multy Variate Analysis
+# CutFlow & Multivariate Analysis
 This repository is made to solve the Sudoku puzzle.
 
 ## CutFlow
