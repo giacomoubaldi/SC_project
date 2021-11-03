@@ -24,9 +24,10 @@ import subprocess
 
 #---------------------------------
 #Ask to call Cutflow and TMVA
+print("Cutflow selection is launched.")
 answer=''
 while( not (answer == "y" or answer == "yes" or answer == "n" or answer == "no" )):
-	print( " Do you want to run the Multivariate Data analysys? y/n ")
+	print( " Do you want to run also the Multivariate Data analysys? y/n ")
 	answer = raw_input()
 
 if (answer == "n" or answer == "no"):
