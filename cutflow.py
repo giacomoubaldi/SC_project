@@ -228,7 +228,8 @@ class cutFlow:
                 
                 #If the cut is bad written in the configfile, then exit
                 try:
-                    #according to the cut, filter out the element that satisfy the requests 
+                    #according to the cut, filter out the element that satisfy the requests
+                    #Filter() is a method that loops on all the events and filter out the ones which do not satisfy the cuts
                     self.dataframe[i] = self.dataframe[i].Filter(str(self.cuts[j][1]))
                 except:
                     logging.warning("\033[91mERROR: Please be sure you have written the "+str(j+1)+"° cut in the right way in your config file\033[1;0m") 
@@ -327,7 +328,7 @@ class cutFlow:
         print("\n\n")
     
     
-    #@staticmethod
+    
     def GetCounts(self):
         """
         It stamps all the results of the counts of events of a given branch after every cut.
@@ -408,10 +409,7 @@ class cutFlow:
                 self.table.append([str(self.cuts[j][0]), str(self.SNR[i][j+1]),str(self.SNR_w[i][j+1]) ])               
             self.printTable()    
             
-            #c2 = ROOT.TCanvas('c2', 'c2', 700, 500)
-           # myHisto = self.dataframe[i].Histo1D("mt")
-            #myHisto.Draw()
-            #c2.SaveAs("hist.png")             
+                       
         print("\n\n\n")  
         
         #Feedback of the stamp on terminal

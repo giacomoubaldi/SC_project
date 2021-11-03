@@ -10,8 +10,10 @@ using namespace std;
 
 
 
-void tmva_train(string inFileName_sig, vector <string> nameTree_sig, string inFileName_bkg, vector <string> nameTree_bkg,  vector <string> TMVA_variable , string TMVA_cut_sig, string TMVA_cut_bkg, string TMVA_database_name, string TMVA_ROC_name, string TMVA_outFileName)
+void tmva_train(string inFileName_sig, vector <string> nameTree_sig, string inFileName_bkg, vector <string> nameTree_bkg,  vector <string> TMVA_variable , string TMVA_cut_sig, string TMVA_cut_bkg, string TMVA_dataloader_name, string TMVA_ROC_name, string TMVA_outFileName)
 {
+//this function open .root datasets as signal and background ones and start a multivariate analysis based on variables given as input. The results are the weight of the variables and the ROC curve.
+
 
 
 //initialization of the .root files to open
@@ -41,7 +43,7 @@ for (int i = 0; i < nameTree_sig.size(); i++){  // for every branch of the signa
 	"!DrawProgressBar:AnalysisType=Classification"));
 	
 	//declare dataloader
-	title = TMVA_database_name+"_"+nameTree_sig[i]+"_"+to_string(i);
+	title = TMVA_dataloader_name+"_"+nameTree_sig[i]+"_"+to_string(i);
         dataloader.push_back( new TMVA::DataLoader (title.c_str()));
         
         //Define the input variables that shall be used for the classifier training      //controls of the names happen after      

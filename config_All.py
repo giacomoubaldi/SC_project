@@ -1,13 +1,13 @@
 
 {
         #For signal:
-        "inFileName_sig"    : "signal_Demo.root",           #name of .root dataset
-        "nameTree_sig"      : ["C1N2_WZ_300_0_NoSys"],      #name of branches of the dataset I am interested in. 
+        "inFileName_sig"    : "/home/ATLAS-T3/student-34/SC/ntuples_studenti/allTrees_signal_NoSys.root",           #name of .root dataset
+        "nameTree_sig"      : ["C1N2_WZ_300_0_NoSys","C1N2_WZ_800_0_NoSys","C1C1_WW_1000_0_NoSys"],      #name of branches of the dataset I am interested in. 
                                                                 #N.B.: it is a LIST of string even for just one value!
                                                                 #N.B.: please be sure the names are correct!
         #For background:
-        "inFileName_bkg"    : "bkg2_Demo.root",             #same specific and raccomandation as before
-        "nameTree_bkg"      : ["multiboson_NoSys"],
+        "inFileName_bkg"    : "/home/ATLAS-T3/student-34/SC/ntuples_studenti/allTrees_bkg_NoSys.root",             #same specific and raccomandation as before
+        "nameTree_bkg"      : ["multiboson_NoSys","diboson_NoSys","singletop_NoSys","ttbar_NoSys","tth_NoSys","ttv_NoSys","vh_NoSys","wjets_NoSys","zjets_NoSys"],
 
         #common cuts for the cutflow
             #N.B.: it is a LIST even for one cut
@@ -32,11 +32,11 @@
         
         #common outfile for the read out
             #N.B.: everytime you run the program, the output file would be rewashed
-        "outFileName"       : "results/cutflow_results_Demo.txt",
+        "outFileName"       : "results/cutflow_results_All.txt",
         
         
-        #common outfile for TMVA analysis        
-        #variables with which apply MVA; it's a LIST of string             
+        #common outfile for TMVA analysis
+        #variables with which apply MVA; it's a LIST of string     
         "TMVA_variable"     : ["nLep_base" , "nLep_signal" , "lep1Pt" , "nJet30" , "nBJet30_DL1" ," met" , "met_Phi" ,"nFatjets" , "mt"],
         
         #cuts for signal events
@@ -46,13 +46,13 @@
         "TMVA_cut_bkg"       : "met>100&&nJet25>=1&&nLep_base<=2&&nLep_signal<=2&&mt>50",
         
         #output name of dataloader
-        "TMVA_dataloader_name" : "results/TMVA_dataloader_Demo",
+        "TMVA_dataloader_name" : "results/TMVA_dataloader_All",
         
         #output name of ROC curve graph
-        "TMVA_ROC_name" : 	"results/TMVA_ROC_Curve_Demo",
+        "TMVA_ROC_name" : 	"results/TMVA_ROC_Curve_All",
         
         #output name of TMVA analysis (it can be opened as  TMVA::TMVAGui("TMVAOutputCV.root")
-        "TMVA_outFileName"  : "results/TMVA_Output_demo" #.root
+        "TMVA_outFileName"  : "results/TMVA_Output_All" #.root
 
 
 }
