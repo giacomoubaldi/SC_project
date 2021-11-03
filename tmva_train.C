@@ -10,7 +10,7 @@ using namespace std;
 
 
 
-void tmva_train(string inFileName_sig, vector <string> nameTree_sig, string inFileName_bkg, vector <string> nameTree_bkg,  vector <string> TMVA_variable , string TMVA_cut_sig, string TMVA_cut_bkg, string TMVA_outFileName)
+void tmva_train(string inFileName_sig, vector <string> nameTree_sig, string inFileName_bkg, vector <string> nameTree_bkg,  vector <string> TMVA_variable , string TMVA_cut_sig, string TMVA_cut_bkg, string TMVA_database_name, string TMVA_ROC_name, string TMVA_outFileName)
 {
 
 
@@ -41,7 +41,7 @@ for (int i = 0; i < nameTree_sig.size(); i++){  // for every branch of the signa
 	"!DrawProgressBar:AnalysisType=Classification"));
 	
 	//declare dataloader
-	title = "dataset_signal_"+nameTree_sig[i]+"_"+to_string(i);
+	title = TMVA_database_name+"_"+nameTree_sig[i]+"_"+to_string(i);
         dataloader.push_back( new TMVA::DataLoader (title.c_str()));
         
         //Define the input variables that shall be used for the classifier training      //controls of the names happen after      
@@ -81,11 +81,20 @@ for (int i = 0; i < nameTree_sig.size(); i++){  // for every branch of the signa
 
 
 	//-----------------
-	//Book the methods -- MLP
+	//Book the methods
+	
+	// Multi-Layer Perceptron (Neural Network)
 	factory[i]->BookMethod(dataloader[i], TMVA::Types::kMLP, "MLP", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:!UseRegulator" );
 	//H:!V:HiddenLayers=3
 
-	//ADD ANOTHER METHOD!
+
+	// Boosted Decision Trees
+	factory[i]->BookMethod(dataloader[i], TMVA::Types::kBDT, "BDT","!V:NTrees=200:MinNodeSize=2.5%:MaxDepth=2:BoostType=AdaBoost:"
+	"AdaBoostBeta=0.5:UseBaggedBoost:BaggedSampleFraction=0.5:"
+	"SeparationType=GiniIndex:nCuts=20");
+
+	
+	
 	
 	//Train MVAs
 	// If the name of the variables given for the training are bad written, then go to error
@@ -112,7 +121,7 @@ for (int i = 0; i < nameTree_sig.size(); i++){  // for every branch of the signa
 	//Plot ROC Curve	
 	canvas.push_back(factory[i]->GetROCCurve(dataloader[i]));
 	canvas[i]->Draw("Same");
-	name= nameTree_sig[i]+"_"+to_string(i)+"_ROC_Curve"+".png";
+	name=TMVA_ROC_name+"_"+nameTree_sig[i]+"_"+to_string(i)+".png";
 	canvas[i]->SaveAs(name.c_str());
 		
     

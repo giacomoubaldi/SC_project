@@ -79,6 +79,8 @@ try:
     	TMVA_variable = dictionary["TMVA_variable"]
     	TMVA_cut_sig = dictionary["TMVA_cut_sig"]
     	TMVA_cut_bkg = dictionary["TMVA_cut_bkg"]
+    	TMVA_database_name = dictionary["TMVA_database_name"]
+    	TMVA_ROC_name = dictionary ["TMVA_ROC_name"]
     	TMVA_outFileName = dictionary["TMVA_outFileName"]
     
 except:
@@ -137,7 +139,7 @@ if (tmva_call == True):
 	#Since the macro tmva_train(...) is written in c++, ROOT.gInterpreter let it open in a python enviroment
 	ROOT.gInterpreter.Declare(filez)
 	#call of the function interpreted
-	y = ROOT.tmva_train(inFileName_sig, nameTree_sig, inFileName_bkg, nameTree_bkg, TMVA_variable , TMVA_cut_sig, TMVA_cut_bkg, TMVA_outFileName )
+	y = ROOT.tmva_train(inFileName_sig, nameTree_sig, inFileName_bkg, nameTree_bkg, TMVA_variable , TMVA_cut_sig, TMVA_cut_bkg, TMVA_database_name, TMVA_ROC_name, TMVA_outFileName )
 	
 	
 	
