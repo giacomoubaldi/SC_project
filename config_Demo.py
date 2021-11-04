@@ -37,7 +37,7 @@
         
         #common outfile for TMVA analysis        
         #variables with which apply MVA; it's a LIST of string             
-        "TMVA_variable"     : ["nLep_base" , "nLep_signal" , "lep1Pt" , "nJet30" , "nBJet30_DL1" ," met" , "met_Phi" ,"nFatjets" , "mt"],
+        "TMVA_variable"     : ["nLep_base" , "nLep_signal" , "lep1Pt" , "nJet30" , "nBJet30_DL1" ,"met" , "met_Phi" ,"nFatjets" , "mt"],
         
         #cuts for signal events
         "TMVA_cut_sig"	  	: "met>100&&nJet25>=1&&nLep_base<=2&&nLep_signal<=2&&mt>50",

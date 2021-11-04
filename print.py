@@ -17,7 +17,6 @@ import logging
 
 
 
-
 #---------------------------------
 #Ask to call Cutflow and TMVA
 print("Cutflow selection is launched.")
@@ -66,14 +65,14 @@ except:
 #If the file does not contain a dictionary variable with the needed keys, then exit 
 try:
     inFileName_sig = dictionary["inFileName_sig"]
-    nameTree_sig = dictionary["nameTree_sig"]
+    nameTree_sig = list(dictionary["nameTree_sig"])
     inFileName_bkg = dictionary["inFileName_bkg"]
-    nameTree_bkg = dictionary["nameTree_bkg"]
+    nameTree_bkg = list(dictionary["nameTree_bkg"])
     cuts = dictionary["cuts"]
     weight = dictionary["weight"]
     outFileName = dictionary["outFileName"]
     if (tmva_call == True):		#control the keys needed by tmva analysys only if it would be called
-    	TMVA_variable = dictionary["TMVA_variable"]
+    	TMVA_variable = list(dictionary["TMVA_variable"])
     	TMVA_cut_sig = dictionary["TMVA_cut_sig"]
     	TMVA_cut_bkg = dictionary["TMVA_cut_bkg"]
     	TMVA_dataloader_name = dictionary["TMVA_dataloader_name"]
@@ -131,13 +130,30 @@ if (tmva_call == True):
 	raw_input()
 	
 	
+	
+	
 	#Read the macro of tmva in the variable 'filez'	
 	filez = open('tmva_train.C', 'r').read()
 	#Since the macro tmva_train(...) is written in c++, ROOT.gInterpreter let it open in a python enviroment
 	ROOT.gInterpreter.Declare(filez)
 	#call of the function interpreted
 	#(I ran the macro in this way and not via os.sys in order to pass arguments in a compact way and after they are all checked by the script)
-	y = ROOT.tmva_train(inFileName_sig, nameTree_sig, inFileName_bkg, nameTree_bkg, TMVA_variable , TMVA_cut_sig, TMVA_cut_bkg, TMVA_dataloader_name, TMVA_ROC_name, TMVA_outFileName )
+	
+	
+	#in some versions of python it fails to convert a list of string to a c++ vector<string>. So I convert a list to a unique string, putting all the elements separated by a space
+	# i pass a string as an argument and then in the c++ script I go back to a vector<string>
+	
+	nameTree_sig_string = ' '.join(nameTree_sig)
+	#print(a)
+	
+	nameTree_bkg_string = ' '.join(nameTree_bkg)
+	#print(a)
+	
+	TMVA_variable_string= ' '.join(TMVA_variable)
+	#print(c)
+	
+	
+	y = ROOT.tmva_train(inFileName_sig, nameTree_sig_string, inFileName_bkg, nameTree_bkg_string, TMVA_variable_string , TMVA_cut_sig, TMVA_cut_bkg, TMVA_dataloader_name, TMVA_ROC_name, TMVA_outFileName )
 	
 	
 

@@ -9,11 +9,39 @@
 using namespace std;
 
 
+void SplitString(string s, vector<string> &v){
+	
+	string temp = "";
+	for(int i=0;i<s.length();++i){
+		
+		if(s[i]==' '){
+			v.push_back(temp);
+			temp = "";
+		}
+		else{
+			temp.push_back(s[i]);
+		}
+		
+	}
+	v.push_back(temp);
+	
+}
 
-void tmva_train(string inFileName_sig, vector <string> nameTree_sig, string inFileName_bkg, vector <string> nameTree_bkg,  vector <string> TMVA_variable , string TMVA_cut_sig, string TMVA_cut_bkg, string TMVA_dataloader_name, string TMVA_ROC_name, string TMVA_outFileName)
+
+
+void tmva_train(string inFileName_sig, string nameTree_sig_string, string inFileName_bkg, string nameTree_bkg_string,  string TMVA_variable_string , string TMVA_cut_sig, string TMVA_cut_bkg, string TMVA_dataloader_name, string TMVA_ROC_name, string TMVA_outFileName)
 {
 //this function open .root datasets as signal and background ones and start a multivariate analysis based on variables given as input. The results are the weight of the variables and the ROC curve.
 
+
+//go back from string to vector<string>
+vector <string> nameTree_sig;
+vector <string> nameTree_bkg;
+vector <string> TMVA_variable;
+
+SplitString(nameTree_sig_string, nameTree_sig);
+SplitString(nameTree_bkg_string, nameTree_bkg);
+SplitString(TMVA_variable_string, TMVA_variable);
 
 
 //initialization of the .root files to open
