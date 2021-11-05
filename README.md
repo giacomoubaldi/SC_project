@@ -18,17 +18,17 @@ A way to improve the capability of event selection is to apply a linear or, even
 ### Repository
 The repository contains:
 - cutflow.py  
-It is a  python class for the cut-based selection. Among its methods, SetCuts() opens the .root dataset and the filtering is applied, while GetCuts() stamps the results on a sheet with the Signal over Background ratio (S/B) to inspect the efficiency of the method. 
+It is a  python class for the cut-based selection. Among its methods, SetRDataFrame() opens the .root dataset; in SetCuts() the filtering is applied, while GetCuts() and GetSNR() stamps the results on a sheet the counts and the Signal over Background ratio (S/B) to inspect the efficiency of the method. 
 - tmva_train.C  
 It is a C++ function based on TMVA, a toolkit of ROOT which provides a ROOT-integrated machine learning
 environment. Once the datasets are opened and the Neural Network and BDT methods are booked, it trains and tests the methods and stamps the ROC curve in order to inspect the efficiency. 
 - config_Demo.py / config_.py  
-The file contains a dictionary variable in which all the information given by the user are set, such as the position of the input and output files or the variables for the cutflow and the tmva analysis we are interested in.
+The file contains a dictionary variable in which all the information given by the user are set, such as the position of the input and output files or the variables for the cutflow and the tmva analysis.
 The first works with the demo dataset, while the second with the complete one.
 - print.py  
 It checks if everything is written in the right way in config file and then it runs cutflow .py and / or tmva_train.C
-- signal_Demo.root - bkg2_Demo.root  
-Dataset of signal and background events. Every tree contains branches and every branch contains events, everyone with specific variables (same for all branches of signal and background).
+- signal_Demo.root - bkg2_Demo.root - allTrees_signal_NoSys.root - allTrees_bkg_NoSys.root  
+Dataset of signal and background events. Every tree contains branches and every branch contains events, everyone with specific variables (same for all branches of signal and background). The former are demo dataset with only one branch, the latter are real dataset.
 
 
 A more detailed description is inside every file.
@@ -51,7 +51,7 @@ python print.py config_Demo.py
 
 
 
-If you want to run the total version, you have to be sure to be inside TIER-3 since the dataset are located there.
+If you want to run the total version, you have to be sure to be inside TIER-3 since the dataset are located there. N.B.: it can take a lot of time.
 Type on the terminal opened inside the repository:
 
 ```

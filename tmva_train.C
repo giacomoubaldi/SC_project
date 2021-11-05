@@ -10,7 +10,7 @@ using namespace std;
 
 
 void SplitString(string s, vector<string> &v){
-	
+//method to convert a string into a vector<string>: every time it finds a space, it splits the string in new elements
 	string temp = "";
 	for(int i=0;i<s.length();++i){
 		
@@ -31,10 +31,10 @@ void SplitString(string s, vector<string> &v){
 
 void tmva_train(string inFileName_sig, string nameTree_sig_string, string inFileName_bkg, string nameTree_bkg_string,  string TMVA_variable_string , string TMVA_cut_sig, string TMVA_cut_bkg, string TMVA_dataloader_name, string TMVA_ROC_name, string TMVA_outFileName)
 {
-//this function open .root datasets as signal and background ones and start a multivariate analysis based on variables given as input. The results are the weight of the variables and the ROC curve.
+//this function opens .root signal and background datasets and starts a multivariate analysis based on variables given as input. Once the methods to be used are booked, the MVA is trained and tested. The results are the weight of the variables for an efficient MVA (according to the choosen methods) and the ROC curve.
 
-
-//go back from string to vector<string>
+//As written in print.py file, the conversion from python list(string) to c++ vector<string> does not work well for every version of python. So, what I have done was to convert (in .py script) a list into a simple string before calling tmva_train.C function and now, once I am inside this function in c++ enviroment,
+//I go back from string to vector<string>  using SplitString function
 vector <string> nameTree_sig;
 vector <string> nameTree_bkg;
 vector <string> TMVA_variable;
@@ -48,7 +48,7 @@ SplitString(TMVA_variable_string, TMVA_variable);
 auto inputFile_signal = TFile::Open(inFileName_sig.c_str());
 auto inputFile_bkg = TFile::Open(inFileName_bkg.c_str());
 
-//some initializations
+//some initializations. In particular, I use a vector of factory and vector of dataset because i have to generate new ones for every signal branch.
 vector<TFile*> 	outputfile;
 vector<TMVA::Factory*>	factory;
 vector<TMVA::DataLoader*>	dataloader;
@@ -62,19 +62,19 @@ string name = "";
 for (int i = 0; i < nameTree_sig.size(); i++){  // for every branch of the signal	
 	 
 	 title = TMVA_outFileName + "_"+nameTree_sig[i]+"_"+to_string(i)+".root";
-	 //create an output file
+	 //create an output file element
 	 outputfile.push_back (TFile::Open(title.c_str(), "RECREATE"));
 	 
-	//declare Factory 	 
+	//declare Factory element in my vector 	  
 	 factory.push_back (new TMVA::Factory("TMVAClassification", outputfile[i],
 	"!V:ROC:!Correlations:!Silent:Color:"
 	"!DrawProgressBar:AnalysisType=Classification"));
 	
-	//declare dataloader
+	//declare dataloader element
 	title = TMVA_dataloader_name+"_"+nameTree_sig[i]+"_"+to_string(i);
         dataloader.push_back( new TMVA::DataLoader (title.c_str()));
         
-        //Define the input variables that shall be used for the classifier training      //controls of the names happen after      
+        //Define the input variables that shall be used for the classifier training      //control of the names comes after      
         for (string keys : TMVA_variable) {
         		dataloader[i]->AddVariable(keys, 'F' );
 			}
@@ -92,10 +92,12 @@ for (int i = 0; i < nameTree_sig.size(); i++){  // for every branch of the signa
 	for (int j = 0; j < nameTree_bkg.size(); j++){
 		bkg.push_back(new TTree());
 		inputFile_bkg->GetObject(nameTree_bkg[j].c_str(), bkg[j]);
-		// add backgrounr tree 
+		// add backgrounr tree
 		dataloader[i] -> AddBackgroundTree(bkg[j], 1.0);
+	
+	// a dataloader[i] contains 1 signal branch and ALL bkg branches
 	}
-
+	
 
 	//Apply additional cuts on the signal and background samples (can be different)
 	//TCut mycuts = "";  // es. "abs(var1)< 0.5 && ..."
@@ -148,7 +150,7 @@ for (int i = 0; i < nameTree_sig.size(); i++){  // for every branch of the signa
 
 
 	//-------------------
-	//Plot ROC Curve	
+	//Plot ROC Curve for every signal branch
 	canvas.push_back(factory[i]->GetROCCurve(dataloader[i]));
 	canvas[i]->Draw("Same");
 	name=TMVA_ROC_name+"_"+nameTree_sig[i]+"_"+to_string(i)+".png";
@@ -161,13 +163,13 @@ for (int i = 0; i < nameTree_sig.size(); i++){  // for every branch of the signa
 
 
 for (string branch : nameTree_sig) {
-	cout<<"=== wrote root file and stamped ROC Curve for signal "<< branch.c_str()<<endl;;	
+	cout<<"=== written root file and stamped ROC Curve for signal "<< branch.c_str()<<endl;;	
 }
-cout << "=== TMVAClassification is done!\n";
+cout << "\n\n=== TMVAClassification is done!\n";
 //exit(EXIT_SUCCESS);
 }
 
-//to run via root: root -l tmva_train.C 
-// TMVA::TMVAGui("TMVAOutputCV.root")
+//to run output file via root:
+// TMVA::TMVAGui("TMVAOutput_name.root")
 
 

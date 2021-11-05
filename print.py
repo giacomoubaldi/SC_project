@@ -19,10 +19,12 @@ import logging
 
 #---------------------------------
 #Ask to call Cutflow and TMVA
-print("Cutflow selection is launched.")
+print("Cutflow event-selection is going to be launched.")
 answer=''
+
+#control on the raw_input
 while( not (answer == "y" or answer == "yes" or answer == "n" or answer == "no" )):
-	print( " Do you want to run also the Multivariate Data analysys? y/n ")
+	print( "Do you want to run also the Multivariate Data analysys? y/n ")
 	answer = raw_input()
 
 if (answer == "n" or answer == "no"):
@@ -38,8 +40,8 @@ elif (answer == "y" or answer == "yes"):
 #Parsing and controll of the config file
 
 
-#The script runs over a file .root and asks for a config file
-#If no 1 arg is given, then exit
+#To run the script, you have to type "print.py <config_file_name> on terminal
+#If no arg or more than 1 arg is given, then exit
 if len(sys.argv) != 2:
     print ("\033[91mPlease type:  %s <config file>\033[1;0m"%(sys.argv [0]))
     sys.exit (1)
@@ -54,7 +56,7 @@ except:
     logging.warning("\033[91mPlease insert an existing file\033[1;0m") 
     sys.exit (1)
 
-#If the file does not contain a dictionary variable, then exit  
+#The the file does not contain a dictionary variable (config_Demo.py or config_All contains just a dictionary), then exit  
 try:
     dictionary = ast.literal_eval(contents)
 except:
@@ -101,6 +103,7 @@ file.close()
 holder = sys.stdout
 sys.stdout = open(outFileName,'a')
 
+#I will call now the class cutflow taken from the file cutflow.py
 #Create the istance of signal, set and print the cutflow
 sig = cutFlow(inFileName_sig, nameTree_sig, cuts, weight, outFileName  )
 sig.SetCuts()
@@ -132,27 +135,23 @@ if (tmva_call == True):
 	
 	
 	
-	#Read the macro of tmva in the variable 'filez'	
+	#Read the macro of tmva_train.C in the variable 'filez'	
 	filez = open('tmva_train.C', 'r').read()
 	#Since the macro tmva_train(...) is written in c++, ROOT.gInterpreter let it open in a python enviroment
-	ROOT.gInterpreter.Declare(filez)
-	#call of the function interpreted
-	#(I ran the macro in this way and not via os.sys in order to pass arguments in a compact way and after they are all checked by the script)
+	ROOT.gInterpreter.Declare(filez)	
+	#(I ran the macro using gInterpreter and not via os.sys in order to pass arguments in a compact way. This let me to check these arguments just one time here and not even again in the c++ function)
 	
 	
-	#in some versions of python it fails to convert a list of string to a c++ vector<string>. So I convert a list to a unique string, putting all the elements separated by a space
-	# i pass a string as an argument and then in the c++ script I go back to a vector<string>
+	#in some versions of python it fails to convert a list of string to a c++ vector<string>. So I convert a list to a unique string before calling the c++ function, putting all the elements separated by a space
+	# Then I pass a string as an argument to the function and then in the c++ script I go back from a string to a vector<string> (see tmva_train.C)
 	
 	nameTree_sig_string = ' '.join(nameTree_sig)
-	#print(a)
-	
+		
 	nameTree_bkg_string = ' '.join(nameTree_bkg)
-	#print(a)
-	
+		
 	TMVA_variable_string= ' '.join(TMVA_variable)
-	#print(c)
-	
-	
+		
+	#run tmva_train() function
 	y = ROOT.tmva_train(inFileName_sig, nameTree_sig_string, inFileName_bkg, nameTree_bkg_string, TMVA_variable_string , TMVA_cut_sig, TMVA_cut_bkg, TMVA_dataloader_name, TMVA_ROC_name, TMVA_outFileName )
 	
 	

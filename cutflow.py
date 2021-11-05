@@ -14,7 +14,7 @@ import logging
 
 class cutFlow:
     '''
-    This class takes a TTree from a .root dataset and filters all the events according to cuts given by the user.
+    This class takes a TTree from a .root dataset and filters all the events according to a cut-based event selection. Cuts are given manually by the user through a config file.
     At the end, the efficiency of the cuts is showed by the signal / background ratio.
 
     Args
@@ -24,13 +24,13 @@ class cutFlow:
             name of the .root dataset 
         
         nameTree: list of string
-            array of the names of all the branches of the TTree I am interested in
+            list of the names of all the branches of the TTree I am interested in
         
         cuts: list of string 
-            array of all the cuts to apply to my dataset
+            list of all the cuts to apply to my dataset.
             
         weight: string
-            a new column would be added in the dataset where every event would be weighted according to the weight string 
+            a new column would be added in the dataset where every event would be weighted by what is written in this string
             
         outFileName: string
            name of the file where to save the results 
@@ -60,7 +60,7 @@ class cutFlow:
             list of all the branches of the TFile
         
         self.dataframe: []
-            list of all the branches but using the ROOT Class RDataFrame rather than TFile to exploit specific methods
+            list of all the branches but using the ROOT Class RDataFrame rather than TTree to exploit specific methods
         
         self.counts: []
             list of the number of the events after a cut for every branch of the dataset
@@ -114,16 +114,16 @@ class cutFlow:
         self.SNR = []
         self.SNR_w = []
         
-        
+ #I will use self. attributes in order to pass just 'self' as arguments of methods       
 
 
     
     def SetDataFrame (self):
         """ 
-        Open .root dataset and associate its branches to a TTree list variable. Then shift the TTree list into a RDataFrame list;
+        Open .root dataset and associate its branches to a TTree list. Then shift the TTree list into a RDataFrame list;
         the advantage is that I am able to exploit specific methods of the RDataFrame class like Filter() and Count() fundamental for the cutflow.
         The column of the value of the weighted event is added to the RDataSet and it will be used in the cutflow analysis.
-        Some checks are done to be sure the branch names and weight is inserted correctly.
+        Some checks are done to be sure the branch names and weight are inserted correctly.
         
         
         """    
@@ -140,7 +140,7 @@ class cutFlow:
             logging.warning("\033[91mError: please insert the right name of the input  dataset\033[1;0m") 
             sys.exit (1)
     
-        #Retrieve the TTree from the file
+        
         for i in range(len(self.nameTree)): #for every branch
             
             #If the branch I am looking for is not present in the TFile, then exit
@@ -149,13 +149,14 @@ class cutFlow:
                 sys.exit (1)
             else:
                 
-                #Add an element on the TTree array concerning a specific branch
+                #Retrieve the TTree from the file               
                 self.tree.append(self.inFile.Get(self.nameTree[i]))
                 
-                #Create an array of RDataFrame from a TTree (shift a TTree array in a RDataFrame array) that i will use for the cuflow
+                #shift a TTree array element in a RDataFrame array element that i will use for the cuflow
                 self.dataframe.append(ROOT.RDataFrame(self.tree[i]))
                 
                 #Add the column "weight" for every RDataFrame branches that will be used in the cutflow
+                #Since the dataset we are using are made of simulated data, weight rapresents how every single simulated data would be found in reality considering all the efficiency coefficients
                 #If the weight is bad written in the configfile, then exit
                 try:
                     self.dataframe[i] = self.dataframe[i].Define("weight", self.weight)
@@ -167,12 +168,12 @@ class cutFlow:
 
     def SetCuts(self):
         """
-        For every branch, a cut is done and all the events which remain are counted and collected in the array 'counts'.
+        For every branch, a cut-based event selection is done and all the events which remain are counted and the number is collected in the array 'counts'.
         The array 'counts' is 2D: counts[i][j] where 'i' stands for the branch and 'j' for the cut.
             F.e. counts[2][3] contains the number of events of the 3° branch i am analizying after the 4° cut is applied.
-            N.b.: the events would be filtered out one cut after the other, so every cut is influenced by the previous one.
+            N.b.: it is a "projection" cutflow, so every cut is influenced by the previous one: it means that the order of the cuts makes the difference.
         
-        Parallelly, all the events of all the branches are summed into 'totalcounts'.
+        Parallelly, all the events of all the branches are summed into 'totalcounts'. This is done because when we will do S/B ratio, it would be 1 signal branch / ALL bkg branches, so I need to summ all the counts.
         The array 'totalcounts' is 1D: totalcounts[j] where 'j' stands for the cut.
             F.e. counts[2] contains the number of ALL events (sum of all the 'i' branches) after the 3° cut is applied.
         
@@ -227,20 +228,21 @@ class cutFlow:
                 self.counts_w[i].append("")
                 
                 #If the cut is bad written in the configfile, then exit
-                try:
-                    #according to the cut, filter out the element that satisfy the requests
-                    #Filter() is a method that loops on all the events and filter out the ones which do not satisfy the cuts
+                try:                    
+                    #Filter() is a method that loops on all the events and filter out the ones which do not satisfy the cuts given as arguments
+                    #it means that after the filter(), dataframe losts the events forever
                     self.dataframe[i] = self.dataframe[i].Filter(str(self.cuts[j][1]))
                 except:
                     logging.warning("\033[91mERROR: Please be sure you have written the "+str(j+1)+"° cut in the right way in your config file\033[1;0m") 
                     sys.exit (1)
         
                 
-                #for every i element, the j element is filled with the number of events after the j cut
+                #for every i element, the j>0 element is filled with the number of events after the j cut
+                #(as said before j=0 is the element before the cut, so i apply j+1 to obtain j>0 always)
                 self.counts[i][j+1] = self.dataframe[i].Count().GetValue()
                 self.counts_w[i][j+1] = self.dataframe[i].Sum("weight").GetValue()
                 
-                #the j element is filled with the sum of ALL the events of ALL the 'i' branches
+                #the j>0 element is filled with the sum of ALL the events of ALL the 'i' branches
                 self.totalcounts.append(0)
                 self.totalcounts_w.append(0)
                 self.totalcounts[j+1]= self.totalcounts[j+1]+ self.counts[i][j+1]
@@ -284,6 +286,7 @@ class cutFlow:
             self.SNR_w.append([])
             
             #for the i-sh branch element, add the j=0 element where the cuts are still not applied
+             #(as said before j=0 is the element before the cut, so i apply j+1 to obtain j>0 always)
             self.SNR[i].append("")
             self.SNR[i][0] = (float (self.counts[i][0]) / float (bkg.totalcounts[0]))
             
@@ -291,7 +294,7 @@ class cutFlow:
             self.SNR_w[i][0] = (float (self.counts_w[i][0]) / float (bkg.totalcounts_w[0]))
                   
             for j in range(len(self.cuts)): #for every cut
-                #for the i-sh branch element, add the j element and fill the S/B ratio after the j-sh cut is applied 
+                #for the i-sh branch element, add the j>0 element and fill the S/B ratio after the j-sh cut is applied 
                 self.SNR[i].append("")
                 self.SNR[i][j+1] = (float(self.counts[i][j+1]) / float(bkg.totalcounts[j+1]))
                 self.SNR_w[i].append("")
@@ -356,7 +359,7 @@ class cutFlow:
             self.table = []            
             self.table.append(["CUT", "FILTERED DATA", "WEIGHTED DATA"])
             
-            #table with 3 columns and raws for every cut. Inside the value of the counts after each cut.
+            #table with 3 columns and raws for every cut. Inside every raw there are  the values of the counts after each cut.
             for j in range(len(self.cuts)): #for every cut
                 self.table.append([str(self.cuts[j][0]), str(self.counts[i][j+1]), str(self.counts_w[i][j+1])])
             
