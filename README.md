@@ -41,6 +41,10 @@ git clone https://github.com/giacomoubaldi/SC_project.git
 ```
 
 ### Version
+The program was tested with the version of python 2.7.16, the version of g++ (GCC) 8.3.0 and the version of root 6.20.06.  
+[TMVA](https://root.cern/manual/tmva/) enviroment is required.
+
+
 
 ### Run
 If you want to run the demo version, in which one branch of signal and one branch of background are considered, type on the terminal opened inside the repository:
