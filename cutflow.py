@@ -201,11 +201,11 @@ class cutFlow:
         #Start the cutflow
         for i in range(len(self.nameTree)): #for every branch
             
-            #add the element of the i-sh branch
+            #define the element of the i-sh branch
             self.counts.append([])
             self.counts_w.append([])
             
-            #for every i element, add the element of the j-sh cut
+            #for every i element, define the element of the j-sh cut
             self.counts[i].append("")
             self.counts_w[i].append("")
             
@@ -223,7 +223,7 @@ class cutFlow:
             
             #start to apply the cuts
             for j in range(len(self.cuts)): #for every cut
-                #for the i-sh branch element, add the element of the j-sh cut
+                #for the i-sh branch element, define the element of the j-sh cut
                 self.counts[i].append("")
                 self.counts_w[i].append("")
                 
@@ -281,11 +281,11 @@ class cutFlow:
         
         #start S/B ratio
         for i in range(len(self.nameTree)): #for every branch
-            #add element for the i-sh branch
+            #define element for the i-sh branch
             self.SNR.append([])
             self.SNR_w.append([])
             
-            #for the i-sh branch element, add the j=0 element where the cuts are still not applied
+            #for the i-sh branch element, define the j=0 element where the cuts are still not applied
              #(as said before j=0 is the element before the cut, so i apply j+1 to obtain j>0 always)
             self.SNR[i].append("")
             self.SNR[i][0] = (float (self.counts[i][0]) / float (bkg.totalcounts[0]))
@@ -294,7 +294,7 @@ class cutFlow:
             self.SNR_w[i][0] = (float (self.counts_w[i][0]) / float (bkg.totalcounts_w[0]))
                   
             for j in range(len(self.cuts)): #for every cut
-                #for the i-sh branch element, add the j>0 element and fill the S/B ratio after the j-sh cut is applied 
+                #for the i-sh branch element, define the j>0 element and fill the S/B ratio after the j-sh cut is applied 
                 self.SNR[i].append("")
                 self.SNR[i][j+1] = (float(self.counts[i][j+1]) / float(bkg.totalcounts[j+1]))
                 self.SNR_w[i].append("")
