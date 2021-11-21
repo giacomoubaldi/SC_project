@@ -66,7 +66,7 @@ The results are generated in the folder "results". In particular:
 contains the results of the cutflow for all the signal and background branches
 - TMVA_Output_Demo_name_branch / TMVA_Output_name_branch  
 contains the results of the TMVA methods for the choosen signal branch(es) in a .root file
-- dataset_Demo_name_branch / dataset_name_branch  
+- TMVA_dataloader_Demo_name_branch / dataset_name_branch  
 it is a folder which contains the weights of the variables used by TMVA for the choosen signal branch(es)
 - TMVA_ROC_Curve_Demo_name_branch / TMVA_ROC_Curve_name_branch  
 contains the ROC curve for the TMVA used methods for the choosen signal branch(es)
