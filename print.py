@@ -56,7 +56,7 @@ except:
     logging.warning("\033[91mPlease insert an existing file\033[1;0m") 
     sys.exit (1)
 
-#The the file does not contain a dictionary variable (config_Demo.py or config_All contains just a dictionary), then exit  
+#If the file does not contain a dictionary variable (config_Demo.py or config_All contains just a dictionary), then exit  
 try:
     dictionary = ast.literal_eval(contents)
 except:
