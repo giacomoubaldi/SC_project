@@ -31,6 +31,7 @@ void SplitString(string s, vector<string> &v){
 
 void tmva_train(string inFileName_sig, string nameTree_sig_string, string inFileName_bkg, string nameTree_bkg_string,  string TMVA_variable_string , string TMVA_cut_sig, string TMVA_cut_bkg, string TMVA_dataloader_name, string TMVA_ROC_name, string TMVA_outFileName)
 {
+// TMVA multivariate analysis 
 //this function opens .root signal and background datasets and starts a multivariate analysis based on variables given as input. Once the methods to be used are booked, the MVA is trained and tested. The results are the weight of the variables for an efficient MVA (according to the choosen methods) and the ROC curve.
 
 //As written in print.py file, the conversion from python list(string) to c++ vector<string> does not work well for every version of python. So, what I have done was to convert (in .py script) a list into a simple string before calling tmva_train.C function and now, once I am inside this function in c++ enviroment,
