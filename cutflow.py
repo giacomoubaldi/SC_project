@@ -158,6 +158,7 @@ class cutFlow:
                 #Add the column "weight" for every RDataFrame branches that will be used in the cutflow
                 #Since the dataset we are using are made of simulated data, weight rapresents how every single simulated data would be found in reality considering all the efficiency coefficients
                 #If the weight is bad written in the configfile, then exit
+                #self.weight is obtained from config file, it is an operation between variables. For every event, the product between its variables written in self.weight is done and then added in the new column "weight"
                 try:
                     self.dataframe[i] = self.dataframe[i].Define("weight", self.weight)
                 except:
