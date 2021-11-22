@@ -29,6 +29,10 @@ The first works with the demo dataset, while the second with the complete one.
 It checks if everything is written in the right way in config file and then it runs cutflow .py and / or tmva_train.C
 - signal_Demo.root - bkg2_Demo.root - allTrees_signal_NoSys.root - allTrees_bkg_NoSys.root  
 Dataset of signal and background events. Every tree contains branches and every branch contains events, everyone with specific variables (same for all branches of signal and background). The former are demo dataset with only one branch, the latter are complete dataset.
+For example, the file "signal_Demo.root" has the following structure:
+- *Signal_Demo.root* is the Tree Name
+- - *C1N2_WZ_300_0_NoSys* is the Tree Branch
+- - - *met*, *nJet25*, *Lep_base*, *nLep_signal*, *mt* ... are the variables of every branch
 
 
 A more detailed description is inside every file.
