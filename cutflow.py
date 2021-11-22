@@ -183,6 +183,9 @@ class cutFlow:
         
         We will use the counts of signal and of the background to determine the efficiency of the cutflow method (via S/B ratio)
         
+        
+        N.B: since i don't know a priori how many branches I will analyze, I exploit the dinamic way lists are designed in python: for every new branch, I just append a new element
+        and for every new cut, I just append a new element. In this way I have not to define at the beginning the size of my list.
         """
         
         #inizialize the array  
