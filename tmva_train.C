@@ -85,20 +85,20 @@ for (int i = 0; i < nameTree_sig.size(); i++){  // for every branch of the signa
         
         
         
-        //Set up Dataloader
+        //Set up Dataloader element
         signal.push_back(new TTree());
         inputFile_signal->GetObject(nameTree_sig[i].c_str(), signal[i]);
         
         //add signal tree
 	dataloader[i] -> AddSignalTree(signal[i], 1.0);
 	
-	for (int j = 0; j < nameTree_bkg.size(); j++){
+	for (int j = 0; j < nameTree_bkg.size(); j++){  // for every branch of the bkg
 		bkg.push_back(new TTree());
 		inputFile_bkg->GetObject(nameTree_bkg[j].c_str(), bkg[j]);
-		// add backgrounr tree
+		// add background tree
 		dataloader[i] -> AddBackgroundTree(bkg[j], 1.0);
 	
-	// a dataloader[i] contains 1 signal branch and ALL bkg branches
+	// N.B: a dataloader[i] contains 1 signal branch and ALL bkg branches
 	}
 	
 
@@ -109,14 +109,14 @@ for (int i = 0; i < nameTree_sig.size(); i++){  // for every branch of the signa
 	TCut mycutb = TMVA_cut_bkg.c_str();
 
 	
-	//Tell the dataloader how to use the trainig and testing events:
+	//Tell the dataloader element how to use the trainig and testing events:
 	//If no specifications, half of the events in the tree are used for training,
 	//half for testing
 	dataloader[i]->PrepareTrainingAndTestTree(mycuts,mycutb,"NTrain_Signal=0:NTrain_Background=0:NTest_Signal=0:NTest_Background=0");
 
 
 	//-----------------
-	//Book the methods
+	//Book the methods for every factory element
 	
 	// Multi-Layer Perceptron (Neural Network)
 	factory[i]->BookMethod(dataloader[i], TMVA::Types::kMLP, "MLP", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:!UseRegulator" );
@@ -131,7 +131,7 @@ for (int i = 0; i < nameTree_sig.size(); i++){  // for every branch of the signa
 	
 	
 	
-	//Train MVAs
+	//Train MVAs for factory element
 	// If the name of the variables given for the training are bad written, then go to error
 	try
   	{
@@ -144,7 +144,7 @@ for (int i = 0; i < nameTree_sig.size(); i++){  // for every branch of the signa
 	}
 	
 	
-	//Test MVAs
+	//Test MVAs for factory element
 	factory[i]->TestAllMethods();
     
 	//Evaluate MVAs
