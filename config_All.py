@@ -19,9 +19,9 @@
 
         #common cuts for the cutflow
             #N.B.: it is a LIST even for one cut
-            #N.B.: every element of the list contains the name of the cuts and the commands
-            #N.B.: the events would be filtered out one cut after the other, so be sure even about the disposition
-            #N.B.: please be sure that every cut contains names of columns (variables) which are actually present in the database                  
+            #N.B.: every element of the list contains the name of the cuts and the cuts commands
+            #N.B.: the events would be filtered out one cut after the other: it's a projection filtering, so the order is fundamental
+            #N.B.: please be sure that every cut contains names of columns (variables) which are actually present in the database                
         "cuts"              : [
           ("Preselection 1 lepton - $E_\mathrm{T}^\mathrm{miss} > $ 150 GeV - $N_\mathrm{jet30} = $ 2-3, $m_{\mathrm{T}}$ $>$ 50 GeV", "trigMatch_metTrig&&met>150&&nJet30>=2&&nJet30<4&&nLep_base==1&&nLep_signal==1&&mt>50"),
           ("$N_{\mathrm{b-jets,30}} =$ 2", "nBJet30_DL1==2"),
@@ -34,7 +34,7 @@
 
         #common weight for data
             #N.B.: it is JUST a string
-            #N.B.: please be sure that it contains names of columns which are actually present in the database!            
+            #N.B.: please be sure that it contains names of columns (variables) which are actually present in the database           
         "weight"            : "genWeight*eventWeight*pileupWeight*leptonWeight*bTagWeight",
         
         #common outfile for the read out
