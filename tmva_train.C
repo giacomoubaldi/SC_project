@@ -49,7 +49,9 @@ SplitString(TMVA_variable_string, TMVA_variable);
 auto inputFile_signal = TFile::Open(inFileName_sig.c_str());
 auto inputFile_bkg = TFile::Open(inFileName_bkg.c_str());
 
-//some initializations. In particular, I use a vector of factory and vector of dataset because i have to generate new ones for every signal branch.
+//some initializations.
+// N.B.: rather than Factory, DataLoader, TTree etc variables, I use a vector of them: I have to initialize new ones for every branch of my dataset and, since I don't know a priori how many branches I have,
+// I cannot use just one variable nor arrays (because for arrays I have to initialize the size once for all). So I use vectors
 vector<TFile*> 	outputfile;
 vector<TMVA::Factory*>	factory;
 vector<TMVA::DataLoader*>	dataloader;
