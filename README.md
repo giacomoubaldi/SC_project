@@ -4,6 +4,7 @@ In HEP **data analysis**, we have generally two categories of events (i.e. two d
 **Event selection** rapresents a procedure that loops on all events and decides whether to accept or to discard each of them, according to specific criteria. At the end of the selection we’ll be left with a sample of **candidates**, ideally made mainly of signal events.
 
 This repository explores two different methods for *events selection*: **cutflow** and **multivariate analysis**, based on simulated data obtained by the Susymaker Analysis Package in order to inquire SUSY physics (signal dataset) vs Standard Model (background dataset).
+The aim of event selection is to test the best methods to filter events on simulated dataset and then apply it on experimental data.
 
 
 ## CutFlow
